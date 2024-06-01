@@ -6,7 +6,6 @@ import { showModal } from "../../utils/ShowModal";
 import { NewFiveModal } from "../NewFiveModal/NewFiveModal";
 import { formatDate } from "../../utils/FormatDate.ts";
 import { Fives, FivesResponse } from "../../models/Fives/index.ts";
-import { useGlobalStore } from "../../context/store.tsx";
 
 export const FiveList = () => {
   const navigate = useNavigate();
