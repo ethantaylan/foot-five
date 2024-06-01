@@ -7,6 +7,7 @@ import { PlayersResponse } from "../../models/Players";
 import { useGlobalStore } from "../../context/store";
 import { Alert } from "../Alert/Alert";
 import { startCase } from "lodash";
+import { useLocation } from "react-router-dom";
 
 export interface SubscribeModalProps {
   onConfirm: () => void;
@@ -24,6 +25,8 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({ onConfirm }) => {
   const [isSubstitute, setIsSubstitute] = useState<boolean>(false);
   const [userName, setUserName] = useState<string>(user?.username ?? "");
 
+  const { pathname } = useLocation();
+
   const subscribePlayerFetch = useSupabase<PlayersResponse[]>(
     () =>
       supabase.from("players").insert([
@@ -36,6 +39,7 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({ onConfirm }) => {
           is_substitute: isSubstitute,
           full_name: user?.fullName,
           user_name: userName ? userName : user?.fullName,
+          subscribed_fives: [pathname.replace("/", "")],
         },
       ]),
     false

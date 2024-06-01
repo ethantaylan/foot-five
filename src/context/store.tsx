@@ -5,6 +5,8 @@ type State = {
   players: Players[];
   isUserAlreadySubscribed: boolean | null;
   substitutePlayers: Players[];
+  fivePlace: string;
+  fiveDate: string;
 };
 
 type Action = {
@@ -13,13 +15,18 @@ type Action = {
     isSubscribed: State["isUserAlreadySubscribed"]
   ) => void;
   setSubstitutePlayers: (subtitutePlayers: State["substitutePlayers"]) => void;
+  setFivePlace: (place: State["fivePlace"]) => void;
+  setFiveDate: (date: State["fiveDate"]) => void;
 };
 
 export const useGlobalStore = create<State & Action>((set) => ({
   isUserAlreadySubscribed: null,
   players: [],
   substitutePlayers: [],
-
+  fiveDate: "",
+  fivePlace :"",
+  setFiveDate: (date: string) => set(() => ({ fiveDate: date })),
+  setFivePlace: (place: string) => set(() => ({fivePlace: place})),
   setPlayers: (players: Players[]) => set(() => ({ players: players })),
   setPlayerIsAlreadySubscribed: (isSubcribed: boolean | null) =>
     set(() => ({ isUserAlreadySubscribed: isSubcribed })),

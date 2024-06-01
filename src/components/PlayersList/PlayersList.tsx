@@ -8,12 +8,20 @@ import { useEffect } from "react";
 // import { XCircleIcon } from "@heroicons/react/16/solid";
 import { SubscribeModal } from "../SubscribeModal/SubscribeModal";
 import { useGlobalStore } from "../../context/store";
-import { List } from "../Players/Players";
+import { List } from "../List/List";
 import { ConfirmModal } from "../ConfirmModal/ConfirmModal";
+import { useParams } from "react-router-dom";
 
 export default function PlayersList() {
+  const { id } = useParams();
+
   const getPlayersFetch = useSupabase<PlayersResponse[]>(
-    () => supabase.from("players").select("*").eq("is_substitute", false),
+    () =>
+      supabase
+        .from("players")
+        .select("*")
+        .eq("is_substitute", false)
+        .contains("subscribed_fives", [id] || ""),
     true
   );
 
@@ -91,10 +99,7 @@ export default function PlayersList() {
           }
         />
 
-        <List
-          isSubstitutePlayers
-          players={substitutePlayers}
-        />
+        <List isSubstitutePlayers players={substitutePlayers} />
       </div>
     </div>
   );
