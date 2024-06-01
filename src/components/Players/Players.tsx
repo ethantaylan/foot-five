@@ -36,7 +36,7 @@ export const List: FC<ListProps> = ({
       </div>
 
       {players.length > 0 ? (
-        <ul className="list-none p-0">
+        <ul className="flex flex-col gap-2 p-0">
           {players.map((player, index) => (
             <li
               key={player.userId}

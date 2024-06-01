@@ -44,10 +44,15 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({ onConfirm }) => {
       players.some((player) => player.userId === user?.id) ||
         substitutePlayers.some((player) => player.userId === user?.id)
     );
+
+    if(players.length === 10) {
+      setIsSubstitute(true)
+    }
   }, [players, substitutePlayers]);
 
   const handleConfirm = () => {
     !isUserAlreadySubscribed &&
+      players.length === 10 &&
       subscribePlayerFetch.executeFetch().then(() => {
         onConfirm();
         (document.getElementById("subscribeModal") as HTMLFormElement).close();
@@ -84,7 +89,7 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({ onConfirm }) => {
 
             <Switch
               label="Remplaçant"
-              isChecked={isSubstitute}
+              isChecked={isSubstitute || players.length === 10}
               onToggle={() => setIsSubstitute(!isSubstitute)}
             />
           </div>
