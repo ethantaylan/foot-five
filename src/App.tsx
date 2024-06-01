@@ -8,7 +8,7 @@ export default function App() {
 
   return (
     <div
-      className={`w-screen p-20 items-center h-screen flex justify-center ${styles.background}`}
+      className={`w-screen md:p-20 p-5 items-center h-screen flex justify-center ${styles.background}`}
     >
       {isSignedIn ? <Schedule /> : <Login />}
     </div>

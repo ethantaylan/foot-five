@@ -7,7 +7,12 @@ export default function Profil({ children }: PropsWithChildren) {
       <UserButton
         appearance={{
           elements: {
-            avatarBox: { border: "2px solid grey", height: 35, width: 35 },
+            avatarBox: {
+              border: '0px solid white',
+              height: 35,
+              width: 35,
+              boxShadow: "0px 5px 7px rgb(0 ,0 ,0, 0.3);",
+            },
           },
         }}
       />
