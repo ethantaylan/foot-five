@@ -49,9 +49,8 @@ export const List: FC<ListProps> = ({
               />
 
               <div className="w-full flex items-center justify-between">
-                <div className="flex gap-2">
-                  <span className="font-semibold">{player.lastName}</span>
-                  <span className="font-semibold">{player.firstName}</span>
+                <div className="flex gap-1">
+                  <span className="font-semibold">{player.userName}</span>
                 </div>
               </div>
             </li>

@@ -6,6 +6,7 @@ import { useUser } from "@clerk/clerk-react";
 import { PlayersResponse } from "../../models/Players";
 import { useGlobalStore } from "../../context/store";
 import { Alert } from "../Alert/Alert";
+import { startCase } from "lodash";
 
 export interface SubscribeModalProps {
   onConfirm: () => void;
@@ -21,20 +22,20 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({ onConfirm }) => {
   } = useGlobalStore();
 
   const [isSubstitute, setIsSubstitute] = useState<boolean>(false);
-  const [firstName, setFirstName] = useState<string>(
-    user?.firstName ?? user?.username ?? ""
-  );
+  const [userName, setUserName] = useState<string>(user?.username ?? "");
 
   const subscribePlayerFetch = useSupabase<PlayersResponse[]>(
     () =>
       supabase.from("players").insert([
         {
           user_id: user?.id,
-          first_name: firstName,
+          first_name: userName,
           last_name: user?.lastName,
           user_img: user?.imageUrl,
           email: user?.primaryEmailAddress?.emailAddress,
           is_substitute: isSubstitute,
+          full_name: user?.fullName,
+          user_name: userName ? userName : user?.fullName,
         },
       ]),
     false
@@ -75,11 +76,12 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({ onConfirm }) => {
               <label htmlFor="lastName" className="label-text">
                 Nom
               </label>
+
               <input
                 onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                  setFirstName(event.target.value)
+                  setUserName(event.target.value)
                 }
-                value={firstName}
+                value={startCase(userName)}
                 name="lastName"
                 type="text"
                 placeholder="Type here"
@@ -100,7 +102,7 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({ onConfirm }) => {
             </form>
 
             <button
-              disabled={firstName.length === 0}
+              disabled={userName.length === 0}
               onClick={() => handleConfirm()}
               className="btn btn-sm btn-primary rounded"
             >
