@@ -80,7 +80,6 @@ export default function PlayersList() {
           withSubscriptionButton={true}
           isUserAlreadySubscribed={isUserAlreadySubscribed || undefined}
           players={players}
-          userImg={user?.imageUrl || ""}
           onSubscribe={() =>
             isUserAlreadySubscribed
               ? (
@@ -95,7 +94,6 @@ export default function PlayersList() {
         <List
           isSubstitutePlayers
           players={substitutePlayers}
-          userImg={user?.imageUrl || ""}
         />
       </div>
     </div>

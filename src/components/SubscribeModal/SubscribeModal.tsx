@@ -32,6 +32,7 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({ onConfirm }) => {
           user_id: user?.id,
           first_name: firstName,
           last_name: user?.lastName,
+          user_img: user?.imageUrl,
           email: user?.primaryEmailAddress?.emailAddress,
           is_substitute: isSubstitute,
         },
@@ -45,14 +46,13 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({ onConfirm }) => {
         substitutePlayers.some((player) => player.userId === user?.id)
     );
 
-    if(players.length === 10) {
-      setIsSubstitute(true)
+    if (players.length === 10) {
+      setIsSubstitute(true);
     }
   }, [players, substitutePlayers]);
 
   const handleConfirm = () => {
     !isUserAlreadySubscribed &&
-      players.length === 10 &&
       subscribePlayerFetch.executeFetch().then(() => {
         onConfirm();
         (document.getElementById("subscribeModal") as HTMLFormElement).close();
@@ -66,7 +66,7 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({ onConfirm }) => {
           <div className="flex mb-5 items-center justify-between">
             <h3 className="font-bold text-lg">Inscription au Five</h3>
             {subscribePlayerFetch.error && (
-              <Alert message={"Error"} status={"error"}></Alert>
+              <Alert message="Error" status="error"></Alert>
             )}
           </div>
 

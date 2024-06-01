@@ -5,6 +5,7 @@ export interface PlayersResponse {
   id: number;
   email: string;
   user_id: string;
+  user_img: string
 }
 
 export class Players {
@@ -14,6 +15,7 @@ export class Players {
   lastName: string;
   userId: string;
   email: string;
+  userImg: string
   constructor({
     is_substitute,
     id,
@@ -21,6 +23,7 @@ export class Players {
     first_name,
     last_name,
     user_id,
+    user_img
   }: PlayersResponse) {
     this.isSubstitute = is_substitute;
     this.id = id;
@@ -28,5 +31,6 @@ export class Players {
     this.firstName = first_name;
     this.userId = user_id;
     this.lastName = last_name;
+    this.userImg = user_img
   }
 }

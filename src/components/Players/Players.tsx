@@ -1,10 +1,9 @@
 import { FC } from "react";
-import { Players } from "../../models/Players/index"; // Assuming Players is an array of player objects
+import { Players } from "../../models/Players/index";
 
 export interface ListProps {
   players: Players[];
-  userImg: string;
-  isSubstitutePlayers?: boolean; // Use consistent naming (isSubstitutePlayers)
+  isSubstitutePlayers?: boolean;
   withSubscriptionButton?: boolean;
   onSubscribe?: () => void;
   isUserAlreadySubscribed?: boolean;
@@ -12,7 +11,6 @@ export interface ListProps {
 
 export const List: FC<ListProps> = ({
   players,
-  userImg,
   isSubstitutePlayers,
   withSubscriptionButton,
   onSubscribe,
@@ -46,7 +44,7 @@ export const List: FC<ListProps> = ({
               <img
                 className="rounded-full me-2"
                 width={25}
-                src={userImg}
+                src={player.userImg}
                 alt="Player Avatar"
               />
 
