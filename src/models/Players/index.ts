@@ -9,7 +9,6 @@ export interface PlayersResponse {
   full_name: string;
   user_name: string;
   is_admin: boolean;
-  subscribed_fives: string[]
 }
 
 export class Players {
@@ -23,7 +22,7 @@ export class Players {
   fullName: string;
   userName: string;
   isAdmin: boolean;
-  subscribedFives: string[]
+
   constructor({
     is_substitute,
     id,
@@ -35,7 +34,6 @@ export class Players {
     full_name,
     user_name,
     is_admin,
-    subscribed_fives
   }: PlayersResponse) {
     this.userName = user_name;
     this.isSubstitute = is_substitute;
@@ -47,6 +45,5 @@ export class Players {
     this.userImg = user_img;
     this.fullName = full_name;
     this.isAdmin = is_admin;
-    this.subscribedFives = subscribed_fives
   }
 }

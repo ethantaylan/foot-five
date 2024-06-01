@@ -1,105 +1,125 @@
-import { Players, PlayersResponse } from "../../models/Players";
-import { Spinner } from "../Spinner/Spinner";
+import { useEffect, useState } from "react";
+import { useSupabase } from "../../hooks/useSupabase";
 import { supabase } from "../../supabase";
-import { Alert } from "../Alert/Alert";
-import { useUser } from "@clerk/clerk-react";
-import { useSupabase } from "../../hooks/useSupa3";
-import { useEffect } from "react";
 // import { XCircleIcon } from "@heroicons/react/16/solid";
-import { SubscribeModal } from "../SubscribeModal/SubscribeModal";
 import { useGlobalStore } from "../../context/store";
-import { List } from "../List/List";
+import { Players } from "../../models/Players";
+import { showModal } from "../../utils/ShowModal";
 import { ConfirmModal } from "../ConfirmModal/ConfirmModal";
-import { useParams } from "react-router-dom";
+import { List } from "../List/List";
+import { SubscribeModal } from "../SubscribeModal/SubscribeModal";
+import { FivePlayer, FivePlayerResponse } from "../../models/FivePlayer";
 
 export default function PlayersList() {
-  const { id } = useParams();
+  const {
+    // players,
+    // setPlayers,
+    // isUserAlreadySubscribed,
+    // substitutePlayers,
+    // setSubstitutePlayers,
+    five,
+    players,
+    setPlayers,
+    playerInfo,
+  } = useGlobalStore();
+  const [titulars, setTitulars] = useState<Players[]>([]);
+  const [substitutes, setSubstitutes] = useState<Players[]>([]);
+  const [isUserAlreadySubscribed, setIsUserAlreadySubscribed] =
+    useState<boolean>(false);
 
-  const getPlayersFetch = useSupabase<PlayersResponse[]>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  const getFivePlayersFetch = useSupabase<any>(
     () =>
       supabase
-        .from("players")
-        .select("*")
-        .eq("is_substitute", false)
-        .contains("subscribed_fives", [id] || ""),
-    true
-  );
-
-  const getSubstitudePlayersFetch = useSupabase<PlayersResponse[]>(
-    () => supabase.from("players").select("*").eq("is_substitute", true),
-    true
-  );
-
-  const deletePlayerFetch = useSupabase<PlayersResponse[]>(
-    () => supabase.from("players").delete().eq("user_id", user?.id),
+        .from("five_players")
+        .select("is_substitute, player:player_id(*)")
+        .eq("five_id", five?.id),
     false
   );
 
-  const { user } = useUser();
-
-  const {
-    players,
-    setPlayers,
-    isUserAlreadySubscribed,
-    substitutePlayers,
-    setSubstitutePlayers,
-  } = useGlobalStore();
-
   useEffect(() => {
-    getPlayersFetch.response &&
-      setPlayers(getPlayersFetch.response.map((p) => new Players(p)));
-  }, [getPlayersFetch.response]);
-
-  useEffect(() => {
-    getSubstitudePlayersFetch.response &&
-      setSubstitutePlayers(
-        getSubstitudePlayersFetch.response.map((p) => new Players(p))
+    if (getFivePlayersFetch.response) {
+      console.log(
+        getFivePlayersFetch.response.map(
+          (player: FivePlayerResponse) => new FivePlayer(player)
+        )
       );
-  }, [getSubstitudePlayersFetch.response]);
+      setPlayers(
+        getFivePlayersFetch.response.map(
+          (player: FivePlayerResponse) =>
+            new Players({
+              ...player.player,
+              is_substitute: player.is_substitute,
+            })
+        )
+      );
+    }
+  }, [getFivePlayersFetch.response]);
 
-  if (getPlayersFetch.loading) {
-    return <Spinner />;
-  }
+  useEffect(() => {
+    setIsUserAlreadySubscribed(
+      !!players.find((player) => player?.userId === (playerInfo?.id ?? ""))
+    );
+
+    setTitulars(players.filter((player) => !player.isSubstitute));
+    setSubstitutes(players.filter((player) => player.isSubstitute));
+  }, [players]);
+
+  // const getPlayersFetch = useSupabase<PlayersResponse[]>(
+  //   () => supabase.from("players").select("*").eq("is_substitute", false),
+  //   true
+  // );
+
+  // const getSubstituePlayersFetch = useSupabase<PlayersResponse[]>(
+  //   () => supabase.from("players").select("*").eq("is_substitute", true),
+  //   true
+  // );
+
+  // useEffect(() => {
+  //   getPlayersFetch.response &&
+  //     setPlayers(getPlayersFetch.response.map((p) => new Players(p)));
+  // }, [getPlayersFetch.response]);
+
+  // useEffect(() => {
+  //   getSubstituePlayersFetch.response &&
+  //     setSubstitutePlayers(
+  //       getSubstituePlayersFetch.response.map((p) => new Players(p))
+  //     );
+  // }, [getSubstituePlayersFetch.response]);
+
+  const handleSubscribeModalConfirmation = async () => {
+    getFivePlayersFetch.executeFetch();
+  };
 
   return (
     <div className="w-full">
-      {getPlayersFetch.error && (
-        <Alert message={getPlayersFetch.error.message} status="error" />
-      )}
-
       <ConfirmModal
-        onConfirm={() =>
-          deletePlayerFetch.executeFetch().then(() => {
-            getPlayersFetch.executeFetch();
-            getSubstitudePlayersFetch.executeFetch();
-          })
-        }
+        onConfirm={() => {}}
+        // onConfirm={() => {
+        //   getFiveFetch.executeFetch();
+        // }}
       />
 
       <SubscribeModal
-        onConfirm={() => {
-          getPlayersFetch.executeFetch();
-          getSubstitudePlayersFetch.executeFetch();
-        }}
+        onConfirm={handleSubscribeModalConfirmation}
+        // onConfirm={() => {
+        //   getFiveFetch.executeFetch();
+        // }}
       />
 
       <div className="flex flex-col w-full gap-10">
         <List
           withSubscriptionButton={true}
           isUserAlreadySubscribed={isUserAlreadySubscribed || undefined}
-          players={players}
+          players={titulars}
           onSubscribe={() =>
             isUserAlreadySubscribed
-              ? (
-                  document.getElementById("confirmModal") as HTMLFormElement
-                ).showModal()
-              : (
-                  document.getElementById("subscribeModal") as HTMLFormElement
-                ).showModal()
+              ? showModal("confirmModal")
+              : showModal("subscribeModal")
           }
         />
 
-        <List isSubstitutePlayers players={substitutePlayers} />
+        <List isSubstitutePlayers players={substitutes} />
       </div>
     </div>
   );

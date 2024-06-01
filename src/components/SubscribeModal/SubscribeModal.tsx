@@ -1,67 +1,57 @@
-import { ChangeEvent, FC, useEffect, useState } from "react";
-import { Switch } from "../Switch/Switch";
-import { supabase } from "../../supabase";
-import { useSupabase } from "../../hooks/useSupa3";
 import { useUser } from "@clerk/clerk-react";
-import { PlayersResponse } from "../../models/Players";
-import { useGlobalStore } from "../../context/store";
-import { Alert } from "../Alert/Alert";
 import { startCase } from "lodash";
-import { useLocation } from "react-router-dom";
+import { ChangeEvent, FC, useState } from "react";
+import { useParams } from "react-router-dom";
+import { useGlobalStore } from "../../context/store";
+import { useSupabase } from "../../hooks/useSupabase";
+import { PlayersResponse } from "../../models/Players";
+import { supabase } from "../../supabase";
+import { closeModal } from "../../utils/ShowModal";
+import { Alert } from "../Alert/Alert";
+import { Switch } from "../Switch/Switch";
 
 export interface SubscribeModalProps {
   onConfirm: () => void;
 }
 
 export const SubscribeModal: FC<SubscribeModalProps> = ({ onConfirm }) => {
+  const { five, playerInfo, players } = useGlobalStore();
   const { user } = useUser();
-  const {
-    players,
-    substitutePlayers,
-    setPlayerIsAlreadySubscribed,
-    isUserAlreadySubscribed,
-  } = useGlobalStore();
-
   const [isSubstitute, setIsSubstitute] = useState<boolean>(false);
-  const [userName, setUserName] = useState<string>(user?.username ?? "");
-
-  const { pathname } = useLocation();
+  const [userName, setUserName] = useState<string>(playerInfo?.userName ?? "");
 
   const subscribePlayerFetch = useSupabase<PlayersResponse[]>(
     () =>
-      supabase.from("players").insert([
-        {
-          user_id: user?.id,
-          first_name: userName,
-          last_name: user?.lastName,
-          user_img: user?.imageUrl,
-          email: user?.primaryEmailAddress?.emailAddress,
-          is_substitute: isSubstitute,
-          full_name: user?.fullName,
-          user_name: userName ? userName : user?.fullName,
-          subscribed_fives: [pathname.replace("/", "")],
-        },
-      ]),
+      supabase.from("players").insert({
+        user_id: user?.id,
+        first_name: userName,
+        last_name: user?.lastName,
+        user_img: user?.imageUrl,
+        email: user?.primaryEmailAddress?.emailAddress,
+      }),
     false
   );
 
-  useEffect(() => {
-    setPlayerIsAlreadySubscribed(
-      players.some((player) => player.userId === user?.id) ||
-        substitutePlayers.some((player) => player.userId === user?.id)
+  const { id } = useParams();
+
+  const handleConfirm = async () => {
+    if (!playerInfo) {
+      await subscribePlayerFetch.executeFetch();
+    }
+
+    const isPlayerAlreadySubscribed = players.find(
+      (player) => player.userId === playerInfo?.userId
     );
 
-    if (players.length === 10) {
-      setIsSubstitute(true);
-    }
-  }, [players, substitutePlayers]);
+    !isPlayerAlreadySubscribed && await supabase.from("five_players").insert({
+      five_id: id,
+      player_id: user?.id,
+      is_substitute: isSubstitute,
+    });
 
-  const handleConfirm = () => {
-    !isUserAlreadySubscribed &&
-      subscribePlayerFetch.executeFetch().then(() => {
-        onConfirm();
-        (document.getElementById("subscribeModal") as HTMLFormElement).close();
-      });
+    onConfirm();
+
+    closeModal("subscribeModal");
   };
 
   return (
@@ -95,7 +85,7 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({ onConfirm }) => {
 
             <Switch
               label="Remplaçant"
-              isChecked={isSubstitute || players.length === 10}
+              isChecked={isSubstitute || (five?.players ?? [])?.length === 10}
               onToggle={() => setIsSubstitute(!isSubstitute)}
             />
           </div>

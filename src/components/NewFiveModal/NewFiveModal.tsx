@@ -1,6 +1,5 @@
-import { ChangeEvent, FC } from "react";
-import { useGlobalStore } from "../../context/store";
-import { useSupabase } from "../../hooks/useSupa3";
+import { ChangeEvent, FC, useState } from "react";
+import { useSupabase } from "../../hooks/useSupabase";
 import { supabase } from "../../supabase";
 import { closeModal } from "../../utils/ShowModal";
 import { useUser } from "@clerk/clerk-react";
@@ -11,7 +10,10 @@ export interface NewFiveModalProps {
 }
 
 export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
-  const { setFiveDate, setFivePlace, fiveDate, fivePlace } = useGlobalStore();
+  // const { setFiveDate, setFivePlace, fiveDate, fivePlace } = useGlobalStore();
+
+  const [fiveDate, setFiveDate] = useState<string>('');
+  const [fivePlace, setFivePlace] = useState<string>('');
 
   const { user } = useUser();
 

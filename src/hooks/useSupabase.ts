@@ -14,18 +14,19 @@ export function useSupabase<T>(
   immediate = true
 ): SupabaseHook<T> {
   const [response, setResponse] = useState<T | null>(null);
-  const [loading, setLoading] = useState<boolean>(true);
+  const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<PostgrestError | null>(null);
 
   const executeFetch = async () => {
     setLoading(true);
     setError(null);
 
+    let request;
+
     try {
-      const request = await query();
+      request = await query();
       setResponse(request.data);
     } catch (error) {
-      const request = await query();
       setError(request.error);
     } finally {
       setLoading(false);
