@@ -1,21 +1,25 @@
 import { useUser } from "@clerk/clerk-react";
 import { startCase } from "lodash";
 import { ChangeEvent, FC, useState } from "react";
-import { useParams } from "react-router-dom";
-import { useGlobalStore } from "../../context/store";
 import { useSupabase } from "../../hooks/useSupabase";
-import { PlayersResponse } from "../../models/Players";
+import { Players, PlayersResponse } from "../../models/Players";
 import { supabase } from "../../supabase";
 import { closeModal } from "../../utils/ShowModal";
 import { Alert } from "../Alert/Alert";
 import { Switch } from "../Switch/Switch";
+import { Fives } from "../../models/Fives";
 
 export interface SubscribeModalProps {
   onConfirm: () => void;
+  five: Fives;
+  playerInfo: Players;
 }
 
-export const SubscribeModal: FC<SubscribeModalProps> = ({ onConfirm }) => {
-  const { five, playerInfo, players } = useGlobalStore();
+export const SubscribeModal: FC<SubscribeModalProps> = ({
+  onConfirm,
+  five,
+  playerInfo,
+}) => {
   const { user } = useUser();
   const [isSubstitute, setIsSubstitute] = useState<boolean>(false);
   const [userName, setUserName] = useState<string>(playerInfo?.userName ?? "");
@@ -32,22 +36,21 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({ onConfirm }) => {
     false
   );
 
-  const { id } = useParams();
-
   const handleConfirm = async () => {
     if (!playerInfo) {
       await subscribePlayerFetch.executeFetch();
     }
 
-    const isPlayerAlreadySubscribed = players.find(
-      (player) => player.userId === playerInfo?.userId
+    const isPlayerAlreadySubscribed = five.players.find(
+      (player) => player.userId === playerInfo.userId
     );
 
-    !isPlayerAlreadySubscribed && await supabase.from("five_players").insert({
-      five_id: id,
-      player_id: user?.id,
-      is_substitute: isSubstitute,
-    });
+    !isPlayerAlreadySubscribed &&
+      (await supabase.from("five_players").insert({
+        five_id: five.id,
+        player_id: user?.id,
+        is_substitute: isSubstitute,
+      }));
 
     onConfirm();
 

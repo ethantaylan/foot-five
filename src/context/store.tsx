@@ -4,41 +4,34 @@ import { Fives } from "../models/Fives";
 
 type State = {
   players: Players[];
-  // isUserAlreadySubscribed: boolean | null;
-  // substitutePlayers: Players[];
-  // fivePlace: string;
-  // fiveDate: string;
+  isUserAlreadySubscribed: boolean | null;
   five: Fives | null;
   playerInfo: Players | null;
+  isUserAdmin: boolean | null;
 };
 
 type Action = {
   setPlayers: (players: State["players"]) => void;
-  // setPlayerIsAlreadySubscribed: (
-  //   isSubscribed: State["isUserAlreadySubscribed"]
-  // ) => void;
-  // setSubstitutePlayers: (subtitutePlayers: State["substitutePlayers"]) => void;
-  // setFivePlace: (place: State["fivePlace"]) => void;
-  // setFiveDate: (date: State["fiveDate"]) => void;
+  setPlayerIsAlreadySubscribed: (
+    isSubscribed: State["isUserAlreadySubscribed"]
+  ) => void;
   setFive: (five: State["five"]) => void;
-  setPlayerInfo: (playerInfo: State['playerInfo']) => void;
+  setPlayerInfo: (playerInfo: State["playerInfo"]) => void;
+  setIsUserAdmin: (user: State["isUserAdmin"]) => void;
 };
 
 export const useGlobalStore = create<State & Action>((set) => ({
-  // isUserAlreadySubscribed: null,
+  isUserAdmin: null,
+  isUserAlreadySubscribed: null,
   players: [],
-  // substitutePlayers: [],
-  // fiveDate: "",
-  // fivePlace: "",
   five: null,
   playerInfo: null,
+
+  setIsUserAdmin: (isAdmin: boolean | null) =>
+    set(() => ({ isUserAdmin: isAdmin })),
   setPlayerInfo: (playerInfo: Players | null) => set(() => ({ playerInfo })),
   setFive: (five: Fives | null) => set(() => ({ five })),
-  // setFiveDate: (date: string) => set(() => ({ fiveDate: date })),
-  // setFivePlace: (place: string) => set(() => ({ fivePlace: place })),
   setPlayers: (players: Players[]) => set(() => ({ players: players })),
-  // setPlayerIsAlreadySubscribed: (isSubcribed: boolean | null) =>
-  //   set(() => ({ isUserAlreadySubscribed: isSubcribed })),
-  // setSubstitutePlayers: (players: Players[]) =>
-  //   set(() => ({ substitutePlayers: players })),
+  setPlayerIsAlreadySubscribed: (isSubcribed: boolean | null) =>
+    set(() => ({ isUserAlreadySubscribed: isSubcribed })),
 }));

@@ -7,9 +7,7 @@ export interface FivesResponse {
   place: string;
   place_url: string;
   organizer: string;
-  // players: Players[];
   five_players: FivePlayerResponse[];
-  // substitute_players: Players[];
 }
 
 export class Fives {
@@ -36,6 +34,5 @@ export class Fives {
     this.players = five_players.map(
       ({ is_substitute, player }) => new Players({ ...player, is_substitute })
     );
-    // this.substitutePlayers = substitute_players;
   }
 }

@@ -1,31 +1,63 @@
-import { FC } from "react";
+import { FC, useEffect, useState } from "react";
 import { Players } from "../../models/Players/index";
+import { showModal } from "../../utils/ShowModal";
+import { useGlobalStore } from "../../context/store";
+import { XCircleIcon } from "@heroicons/react/20/solid";
+import { useSupabase } from "../../hooks/useSupabase";
+import { supabase } from "../../supabase";
+import { useParams } from "react-router-dom";
 
 export interface ListProps {
-  players: Players[];
+  players: Players[] | undefined;
   isSubstitutePlayers?: boolean;
   withSubscriptionButton?: boolean;
-  onSubscribe?: () => void;
-  isUserAlreadySubscribed?: boolean;
+  onDeleteUser: () => void;
 }
 
 export const List: FC<ListProps> = ({
   players,
   isSubstitutePlayers,
   withSubscriptionButton,
-  onSubscribe,
-  isUserAlreadySubscribed,
+  onDeleteUser,
 }) => {
+  const { isUserAlreadySubscribed, isUserAdmin } = useGlobalStore();
+
+  const [playerId, setPlayerId] = useState<string>("");
+
+  const { id } = useParams();
+
+  const deletePlayerFetch = useSupabase<Players>(
+    () =>
+      supabase
+        .from("five_players")
+        .delete()
+        .eq("player_id", playerId)
+        .eq("five_id", id),
+    false
+  );
+
+  useEffect(() => {
+    playerId &&
+      id &&
+      deletePlayerFetch.executeFetch().then(() => {
+        onDeleteUser();
+      });
+  }, [playerId, id]);
+
   return (
     <div>
       <div className="flex justify-between items-end mb-2">
         <span className="text-sm font-bold text-primary">
-          {isSubstitutePlayers ? "Remplaçants" : "Joueurs"} ({players.length})
+          {isSubstitutePlayers ? "Remplaçants" : "Joueurs"} ({players?.length})
         </span>
 
         {withSubscriptionButton && (
           <button
-            onClick={onSubscribe}
+            onClick={() =>
+              isUserAlreadySubscribed
+                ? showModal("confirmModal")
+                : showModal("subscribeModal")
+            }
             className="btn btn-sm btn-primary rounded"
           >
             {isUserAlreadySubscribed ? "Se désinscrire" : "S'inscrire"}
@@ -33,7 +65,7 @@ export const List: FC<ListProps> = ({
         )}
       </div>
 
-      {players.length > 0 ? (
+      {players && players.length > 0 ? (
         <ul className="flex flex-col gap-2 p-0">
           {players.map((player, index) => (
             <li
@@ -49,9 +81,15 @@ export const List: FC<ListProps> = ({
               />
 
               <div className="w-full flex items-center justify-between">
-                <div className="flex gap-1">
-                  <span className="font-semibold">{player.userName}</span>
-                </div>
+                <span className="font-semibold">{player.userName}</span>
+                <span>
+                  {isUserAdmin && (
+                    <XCircleIcon
+                      onClick={() => setPlayerId(player.userId)}
+                      className="size-5 text-error cursor-pointer"
+                    />
+                  )}
+                </span>
               </div>
             </li>
           ))}

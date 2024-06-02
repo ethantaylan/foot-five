@@ -9,12 +9,15 @@ import { Fives, FivesResponse } from "../../models/Fives/index.ts";
 import { Players, PlayersResponse } from "../../models/Players/index.ts";
 import { useUser } from "@clerk/clerk-react";
 import { useGlobalStore } from "../../context/store.tsx";
+import { Spinner } from "../Spinner/Spinner.tsx";
+import { XCircleIcon } from "@heroicons/react/20/solid";
 
 export const FiveList = () => {
   const { setFive, setPlayerInfo, setPlayers } = useGlobalStore();
   const navigate = useNavigate();
   const { user } = useUser();
 
+  const [fiveId, setFiveId] = useState<number>();
   const [fives, setFives] = useState<Fives[]>([]);
 
   const getFivesFetch = useSupabase<FivesResponse[]>(
@@ -25,6 +28,11 @@ export const FiveList = () => {
         .order("id", { ascending: false })
         .limit(4),
     true
+  );
+
+  const deleteFiveFetch = useSupabase<FivesResponse[]>(
+    () => supabase.from("fives").delete().eq("id", fiveId),
+    false
   );
 
   const playerInfoFetch = useSupabase<PlayersResponse>(
@@ -42,12 +50,23 @@ export const FiveList = () => {
       setPlayerInfo(new Players(playerInfoFetch.response));
   }, [playerInfoFetch.response]);
 
+  useEffect(() => {
+    fiveId &&
+      deleteFiveFetch.executeFetch().then(() => {
+        getFivesFetch.executeFetch();
+      });
+  }, [fiveId]);
+
+  if (getFivesFetch.loading) {
+    return <Spinner />;
+  }
+
   return (
     <div className="h-full flex flex-col">
       <NewFiveModal onConfirm={() => getFivesFetch.executeFetch()} />
 
       <h1 className="flex text-xl font-bold">Bienvenue !</h1>
-      <h1 className="mt-3 mb-1">Liste des fives</h1>
+      <h2 className="mt-3 mb-1">Liste des fives</h2>
 
       <div className="flex flex-col gap-3">
         {fives && fives.length > 0 ? (
@@ -59,19 +78,30 @@ export const FiveList = () => {
 
             return (
               <div
-                onClick={() => {
-                  navigate(`/${f.id}`);
-                  setFive(f);
-                  setPlayers(f.players);
-                }}
                 key={f.id}
                 className={`w-full border-l-4 ${
                   isPastFive ? "border-red-500" : "border-green-500"
                 } border-opacity-65 bg-white shadow-sm p-2 rounded`}
               >
-                <h2 className="font-bold">{formatDate(f.date)}</h2>
+                <div className="flex justify-between">
+                  <h2 className="font-bold">{formatDate(f.date)}</h2>
 
-                <div className="flex flex-col">
+                  <XCircleIcon
+                    className="size-6 text-error"
+                    onClick={() => {
+                      setFiveId(f.id);
+                    }}
+                  />
+                </div>
+
+                <div
+                  onClick={() => {
+                    navigate(`/${f.id}`);
+                    setFive(f);
+                    setPlayers(f.players);
+                  }}
+                  className="flex flex-col"
+                >
                   <span className="text-secondary text-sm">
                     {f.place.replace("Autre", "Lieu non précisé")}
                   </span>
@@ -81,7 +111,7 @@ export const FiveList = () => {
                       !!f.players.find(
                         (player) => player.id === playerInfoFetch.response?.id
                       ) && (
-                        <div className="badge badge-sm rounded badge-accent">
+                        <div className="badge badge-sm me-1 rounded badge-accent">
                           Inscrit
                         </div>
                       )}
@@ -96,11 +126,11 @@ export const FiveList = () => {
             );
           })
         ) : (
-          <></>
+          <>Pas de fives</>
         )}
       </div>
 
-      <div className="flex h-full mt-2 justify-end"></div>
+      <div className="flex h-full mt-3 justify-end"></div>
       <button
         onClick={() => showModal("newFiveModal")}
         className="btn w-full justify-self-end btn-sm rounded btn-primary"
