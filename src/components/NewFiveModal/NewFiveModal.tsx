@@ -1,19 +1,19 @@
-import { ChangeEvent, FC, useState } from "react";
+import { ChangeEvent, FC, useEffect, useState } from "react";
 import { useSupabase } from "../../hooks/useSupabase";
 import { supabase } from "../../supabase";
 import { closeModal } from "../../utils/ShowModal";
 import { useUser } from "@clerk/clerk-react";
 import { FivesResponse } from "../../models/Fives";
+import { Players, PlayersResponse } from "../../models/Players";
 
 export interface NewFiveModalProps {
   onConfirm: () => void;
 }
 
 export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
-  // const { setFiveDate, setFivePlace, fiveDate, fivePlace } = useGlobalStore();
-
-  const [fiveDate, setFiveDate] = useState<string>('');
-  const [fivePlace, setFivePlace] = useState<string>('');
+  const [fiveDate, setFiveDate] = useState<string>("");
+  const [fivePlace, setFivePlace] = useState<string>("");
+  const [player, setPlayer] = useState<Players>();
 
   const { user } = useUser();
 
@@ -30,6 +30,16 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
     }
   };
 
+  const playerInfoFetch = useSupabase<PlayersResponse>(
+    () => supabase.from("players").select().eq("user_id", user?.id).single(),
+    true
+  );
+
+  useEffect(() => {
+    playerInfoFetch.response &&
+      setPlayer(new Players(playerInfoFetch.response));
+  }, [playerInfoFetch.response]);
+
   const addNewFiveFetch = useSupabase<FivesResponse[]>(
     () =>
       supabase
@@ -39,7 +49,7 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
             date: fiveDate,
             place: fivePlace,
             place_url: handlePlaceUrl(),
-            organizer: user?.fullName || user?.username,
+            organizer: player?.userName,
           },
         ])
         .select(),
@@ -74,7 +84,9 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
             }
             className="select select-sm select-bordered w-full"
           >
-            <option disabled selected>Selectionner le lieu</option>
+            <option disabled selected>
+              Selectionner le lieu
+            </option>
 
             <option>OHSPORT - Tremblay-en-France</option>
             <option>LE FIVE Bobigny - Bobigny</option>

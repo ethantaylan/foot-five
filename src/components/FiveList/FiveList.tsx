@@ -79,7 +79,7 @@ export const FiveList = () => {
             return (
               <div
                 key={f.id}
-                className={`w-full border-l-4 ${
+                className={`w-full cursor-pointer border-l-4 ${
                   isPastFive ? "border-red-500" : "border-green-500"
                 } border-opacity-65 bg-white shadow-sm p-2 rounded`}
               >
