@@ -89,6 +89,7 @@ export default function PlayersList() {
     getFivePlayersFetch.executeFetch().then(() => {
       getFivePlayersFetch.executeFetch();
       getFivesFetch.executeFetch();
+      playerInfoFetch.executeFetch()
     });
   };
 

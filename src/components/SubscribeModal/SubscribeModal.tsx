@@ -28,7 +28,8 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
     () =>
       supabase.from("players").insert({
         user_id: user?.id,
-        first_name: userName,
+        user_name: userName,
+        first_name: user?.firstName,
         last_name: user?.lastName,
         user_img: user?.imageUrl,
         email: user?.primaryEmailAddress?.emailAddress,
@@ -50,10 +51,18 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
         five_id: five.id,
         player_id: user?.id,
         is_substitute: isSubstitute,
+        player_name: userName,
       }));
 
-    onConfirm();
+    !isPlayerAlreadySubscribed &&
+      (await supabase
+        .from("players")
+        .update({
+          user_name: userName,
+        })
+        .eq("user_id", user?.id));
 
+    onConfirm();
     closeModal("subscribeModal");
   };
 
