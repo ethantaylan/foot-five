@@ -59,7 +59,7 @@ export const FiveList = () => {
   }
 
   return (
-    <div className="h-full flex flex-col">
+    <div className="flex flex-col">
       <NewFiveModal onConfirm={() => getFivesFetch.executeFetch()} />
 
       <h1 className="flex text-xl font-bold">Bienvenue !</h1>
@@ -67,10 +67,9 @@ export const FiveList = () => {
 
       <Fives fives={fives} onRemoveFive={setFiveId} />
 
-      <div className="flex h-full mt-3 justify-end" />
       <button
         onClick={() => showModal(Modals.NEW_FIVE_MODAL)}
-        className="btn w-full justify-self-end btn-sm rounded btn-primary"
+        className="btn bottom-0 mt-3 w-full btn-sm rounded btn-primary"
       >
         Nouveau five
       </button>

@@ -11,10 +11,10 @@ export default function App() {
 
   return (
     <div
-      className={`w-screen md:p-20 p-5 min-h-screen justify-center flex ${styles.background}`}
+      className={`w-screen md:p-20 p-5 min-h-screen h-screen justify-center flex ${styles.background}`}
     >
       {isSignedIn ? (
-        <div className="flex max-w-2xl min-h-[420px] h-fit shadow-2xl backdrop-blur-md rounded-xl p-7 bg-white/70 w-full flex-col">
+        <div className="flex max-w-2xl min-h-[420px] h-fit shadow-xl backdrop-blur-md rounded-xl p-7 bg-white/70 w-full flex-col">
           <BrowserRouter>
             <Header />
             <Routes>

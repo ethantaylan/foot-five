@@ -16,6 +16,7 @@ export interface NewFiveModalProps {
 export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
   const [fiveDate, setFiveDate] = useState<string>("");
   const [fivePlace, setFivePlace] = useState<string>("");
+  const [fiveTime, setFiveTime] = useState<string>("0");
   const [player, setPlayer] = useState<Players>();
 
   const { user } = useUser();
@@ -59,6 +60,10 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
     false
   );
 
+  useEffect(() => {
+    console.log(fiveTime)
+  }, [fiveTime])
+
   return (
     <dialog id={Modals.NEW_FIVE_MODAL} className="modal">
       <HiddenCloseModalButton />
@@ -81,6 +86,30 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
             className="input input-bordered input-sm w-full"
             type="date"
           />
+        </div>
+
+        <div className="mb-5">
+          <label htmlFor="set-five-date" className="label-text">
+            Durée
+          </label>
+
+          <input
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setFiveTime(event.target.value)
+            }
+            type="range"
+            min="0"
+            max="2"
+            value={fiveTime}
+            className="range"
+            step="1"
+          />
+
+          <div className="w-full flex justify-between text-xs px-2">
+            <span>1h00</span>
+            <span>1h30</span>
+            <span>2h00</span>
+          </div>
         </div>
 
         <div>
