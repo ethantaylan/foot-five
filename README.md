@@ -1,63 +1,66 @@
+Five-a-Side Football Organizer
+Description
+A web application to organize five-a-side football matches with substitutes. Built with React and TypeScript, using Clerk for authentication and Supabase for the database. Deployed on Vercel.
 
-<img src="./src/assets/logo.png" alt="drawing" width="200"/>
+Technologies
+React
+TypeScript
+Clerk
+Supabase
+Zustand
+React Router
+Axios
+DaisyUI
+Heroicons
+Lodash
+Installation
+Clone the repository:
 
+sh
+Copier le code
+git clone https://github.com/your-username/your-repo.git
+cd your-repo
+Install dependencies:
 
-# Fastplate - React Template
+sh
+Copier le code
+npm install
+Configure environment variables in a .env file:
 
-Fastplate is a powerful React template designed to accelerate your web development projects.
-It comes packed with essential technologies listed below:
+env
+Copier le code
+REACT_APP_CLERK_FRONTEND_API=<your_clerk_frontend_api>
+REACT_APP_SUPABASE_URL=<your_supabase_url>
+REACT_APP_SUPABASE_ANON_KEY=<your_supabase_anon_key>
+Start the application:
 
-- React,
-- React Router,
-- TypeScript,
-- Tailwind CSS,
-- DaisyUI,
-- Heroicons,
-- Axios,
-- SweetAlert2
+sh
+Copier le code
+npm start
+Authentication
+Authentication is handled by Clerk. Configure Clerk in src/index.tsx:
 
+tsx
+Copier le code
+import React from 'react';
+import ReactDOM from 'react-dom';
+import { ClerkProvider } from '@clerk/clerk-react';
+import App from './App';
 
-Providing you with a solid foundation to build modern, responsive, and feature-rich web applications.
+const frontendApi = process.env.REACT_APP_CLERK_FRONTEND_API!;
 
-
-## Features
-
-- **React & React Router:** Leverage the power of React's component-driven architecture and utilize React Router for smooth navigation and routing, ensuring a seamless user experience.
-
-- **TypeScript:** Embrace the benefits of static typing with TypeScript, catching errors early and improving code maintainability.
-
-- **Tailwind CSS & DaisyUI:** Effortlessly design stunning user interfaces with Tailwind CSS, enriched by the intuitive components of DaisyUI. Create responsive layouts and visually appealing designs with ease.
-
-- **Heroicons:** Access a diverse collection of icons with Heroicons, enhancing your app's visual appeal and user interaction.
-
-- **Axios & SweetAlert2:** Simplify API communication with Axios and provide an enhanced user experience with SweetAlert2's elegant alerts and modals.
-
-## Getting Started
-
-Follow these steps to get started with Fastplate:
-
-1. **Clone the Repository:** Clone or fork this repository to your local machine.
-
- ``git clone https://github.com/yourusername/Fastplate.git``
- <br />
-  <br />
- <br />
-  <br />
-2. **Install Dependencies:** Navigate to the project directory and install the required dependencies using your preferred package manager.
-
-``cd Fastplate
-npm install # or yarn install``
- <br />
-  <br />
- <br />
-3. **Start Development Server:** Launch the development server and open the app in your browser.
-
-``npm start # or yarn start``
- <br />
-  <br />
- <br />
-4. **Customize and Build:** Start building your application by adding components, configuring routes, and integrating with APIs. Fastplate provides a solid foundation, allowing you to focus on your application's unique features.
-
-![image](https://github.com/ethantaylan/fastplate-react/assets/59540282/3cfcaaf9-df73-45ac-a92e-28c856757451)
-
-
+ReactDOM.render(
+<ClerkProvider frontendApi={frontendApi}>
+<App />
+</ClerkProvider>,
+document.getElementById('root')
+);
+Deployment on Vercel
+Import the project to Vercel.
+Configure environment variables:
+REACT_APP_CLERK_FRONTEND_API
+REACT_APP_SUPABASE_URL
+REACT_APP_SUPABASE_ANON_KEY
+Deploy.
+License
+This project is licensed under the MIT License.

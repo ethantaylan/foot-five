@@ -1,10 +1,13 @@
 import { ChangeEvent, FC, useEffect, useState } from "react";
-import { useSupabase } from "../../hooks/useSupabase";
+import { useSupabase } from "../../hooks/UseSupabase";
 import { supabase } from "../../supabase";
 import { closeModal } from "../../utils/ShowModal";
 import { useUser } from "@clerk/clerk-react";
-import { FivesResponse } from "../../models/Fives";
-import { Players, PlayersResponse } from "../../models/Players";
+import { Players, PlayersResponse } from "../../models/Player";
+import { Modals } from "../../constants/Modals";
+import { FiveResponse } from "../../models/Five";
+import { FivePlaces } from "../../constants/FivePlaces";
+import { HiddenCloseModalButton } from "../HiddenCloseModalButton/HiddenCloseModalButton";
 
 export interface NewFiveModalProps {
   onConfirm: () => void;
@@ -19,13 +22,13 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
 
   const handlePlaceUrl = () => {
     switch (fivePlace) {
-      case "LE FIVE Bobigny - Bobigny":
+      case FivePlaces.BOBIGNY:
         return "https://maps.app.goo.gl/UEhrap3zoA1EDMKS8";
 
-      case "OHSPORT - Tremblay-en-France":
+      case FivePlaces.TREMBLAY:
         return "https://maps.app.goo.gl/cBg6EFvPY7JkrQfN7";
 
-      case "Autre":
+      case FivePlaces.AUTRE:
         return "";
     }
   };
@@ -40,7 +43,7 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
       setPlayer(new Players(playerInfoFetch.response));
   }, [playerInfoFetch.response]);
 
-  const addNewFiveFetch = useSupabase<FivesResponse[]>(
+  const addNewFiveFetch = useSupabase<FiveResponse[]>(
     () =>
       supabase
         .from("fives")
@@ -57,15 +60,20 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
   );
 
   return (
-    <dialog id="newFiveModal" className="modal">
+    <dialog id={Modals.NEW_FIVE_MODAL} className="modal">
+      <HiddenCloseModalButton />
+
       <div className="modal-box">
         <div className="flex mb-5 items-center justify-between">
           <h3 className="font-bold text-lg">Nouveau five</h3>
         </div>
 
         <div className="mb-5">
-          <label className="label-text">Date</label>
+          <label htmlFor="set-five-date" className="label-text">
+            Date
+          </label>
           <input
+            name="set-five-date"
             value={fiveDate}
             onChange={(event: ChangeEvent<HTMLInputElement>) =>
               setFiveDate(event.target.value)
@@ -76,9 +84,12 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
         </div>
 
         <div>
-          <label className="label-text">Lieu</label>
+          <label htmlFor="set-five-place" className="label-text">
+            Lieu
+          </label>
 
           <select
+            name="set-five-place"
             onChange={(event: ChangeEvent<HTMLSelectElement>) =>
               setFivePlace(event.target.value)
             }
@@ -88,22 +99,19 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
               Selectionner le lieu
             </option>
 
-            <option>OHSPORT - Tremblay-en-France</option>
-            <option>LE FIVE Bobigny - Bobigny</option>
-            <option>Autre</option>
+            {Object.values(FivePlaces).map((place) => (
+              <option key={place}>{place}</option>
+            ))}
           </select>
         </div>
-        <div className="flex w-full gap-2 justify-end mt-6">
-          <form method="dialog">
-            <button className="btn btn-sm btn-ghost">Annuler</button>
-          </form>
 
+        <div className="flex w-full gap-2 justify-end mt-6">
           <button
             disabled={fiveDate.length === 0 || fivePlace.length === 0}
             onClick={() =>
               addNewFiveFetch.executeFetch().then(() => {
                 onConfirm();
-                closeModal("newFiveModal");
+                closeModal(Modals.NEW_FIVE_MODAL);
                 setFiveDate("");
                 setFivePlace("");
               })
@@ -115,9 +123,7 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
         </div>
       </div>
 
-      <form method="dialog" className="modal-backdrop">
-        <button>close</button>
-      </form>
+      <HiddenCloseModalButton />
     </dialog>
   );
 };

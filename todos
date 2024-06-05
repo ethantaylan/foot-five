@@ -1,0 +1,10 @@
+Features:
+    Add five duration
+    Ability to edit five information
+    Add subscribed players in fives card
+    Error handling
+
+Fixes:
+    Empty five organizer username
+    2 fives can be created at the same time
+    

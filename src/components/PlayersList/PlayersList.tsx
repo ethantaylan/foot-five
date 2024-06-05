@@ -1,22 +1,22 @@
 import { useEffect, useState } from "react";
-import { useSupabase } from "../../hooks/useSupabase";
+import { useSupabase } from "../../hooks/UseSupabase";
 import { supabase } from "../../supabase";
-import { Players, PlayersResponse } from "../../models/Players";
+import { Players, PlayersResponse } from "../../models/Player";
 import { ConfirmModal } from "../ConfirmModal/ConfirmModal";
-import { List } from "../List/List";
+import { List } from "../Players/Players";
 import { SubscribeModal } from "../SubscribeModal/SubscribeModal";
 import { FivePlayerResponse } from "../../models/FivePlayer";
-import { Fives, FivesResponse } from "../../models/Fives";
+import { Five, FiveResponse } from "../../models/Five";
 import { useParams } from "react-router-dom";
-import DateAndPlace from "../DateAndPlace/DateAndPlace";
 import { useUser } from "@clerk/clerk-react";
-import { useGlobalStore } from "../../context/store";
+import { useGlobalStore } from "../../context/Store";
 import { closeModal } from "../../utils/ShowModal";
 import { Spinner } from "../Spinner/Spinner";
+import { FiveInformation } from "../FiveInformation/FiveInformation";
 
 export default function PlayersList() {
   const { user } = useUser();
-  const [five, setFive] = useState<Fives>();
+  const [five, setFive] = useState<Five>();
   const [titulars, setTitulars] = useState<Players[]>([]);
   const [substitutes, setSubstitutes] = useState<Players[]>([]);
   const [playerInfo, setPlayerInfo] = useState<Players | null>();
@@ -38,7 +38,7 @@ export default function PlayersList() {
     true
   );
 
-  const getFivesFetch = useSupabase<FivesResponse>(
+  const getFivesFetch = useSupabase<FiveResponse>(
     () =>
       supabase
         .from("fives")
@@ -69,7 +69,7 @@ export default function PlayersList() {
   }, [playerInfo]);
 
   useEffect(() => {
-    getFivesFetch.response && setFive(new Fives(getFivesFetch.response));
+    getFivesFetch.response && setFive(new Five(getFivesFetch.response));
   }, [getFivesFetch.response]);
 
   useEffect(() => {
@@ -89,7 +89,7 @@ export default function PlayersList() {
     getFivePlayersFetch.executeFetch().then(() => {
       getFivePlayersFetch.executeFetch();
       getFivesFetch.executeFetch();
-      playerInfoFetch.executeFetch()
+      playerInfoFetch.executeFetch();
     });
   };
 
@@ -108,7 +108,7 @@ export default function PlayersList() {
   return (
     five &&
     playerInfo && (
-      <div className="w-full">
+      <div className="flex flex-col w-full">
         <ConfirmModal onConfirm={handleUnsuscribeConfirmation} />
 
         <SubscribeModal
@@ -118,7 +118,7 @@ export default function PlayersList() {
         />
 
         <div className="flex flex-col w-full gap-5">
-          <DateAndPlace
+          <FiveInformation
             date={five.date}
             place={five.place}
             placeUrl={five.placeUrl}

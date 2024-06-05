@@ -1,17 +1,18 @@
 import { useUser } from "@clerk/clerk-react";
 import { startCase } from "lodash";
 import { ChangeEvent, FC, useState } from "react";
-import { useSupabase } from "../../hooks/useSupabase";
-import { Players, PlayersResponse } from "../../models/Players";
+import { useSupabase } from "../../hooks/UseSupabase";
+import { Players, PlayersResponse } from "../../models/Player";
 import { supabase } from "../../supabase";
 import { closeModal } from "../../utils/ShowModal";
-import { Alert } from "../Alert/Alert";
 import { Switch } from "../Switch/Switch";
-import { Fives } from "../../models/Fives";
+import { Five } from "../../models/Five";
+import { Modals } from "../../constants/Modals";
+import { HiddenCloseModalButton } from "../HiddenCloseModalButton/HiddenCloseModalButton";
 
 export interface SubscribeModalProps {
   onConfirm: () => void;
-  five: Fives;
+  five: Five;
   playerInfo: Players;
 }
 
@@ -63,64 +64,53 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
         .eq("user_id", user?.id));
 
     onConfirm();
-    closeModal("subscribeModal");
+    closeModal(Modals.SUBSCRIBE_MODAL);
   };
 
   return (
-    <>
-      <dialog id="subscribeModal" className="modal">
-        <div className="modal-box">
-          <div className="flex mb-5 items-center justify-between">
-            <h3 className="font-bold text-lg">Inscription au Five</h3>
-            {subscribePlayerFetch.error && (
-              <Alert message="Error" status="error"></Alert>
-            )}
-          </div>
+    <dialog id={Modals.SUBSCRIBE_MODAL} className="modal">
+      <div className="modal-box">
+        <h3 className="font-bold mb-5 text-lg">Inscription</h3>
 
-          <div className="flex flex-col gap-3">
-            <div className="flex flex-col">
-              <label htmlFor="lastName" className="label-text">
-                Nom
-              </label>
+        <div className="flex flex-col gap-3">
+          <label htmlFor="lastName" className="label-text">
+            Nom
+          </label>
 
-              <input
-                onChange={(event: ChangeEvent<HTMLInputElement>) =>
-                  setUserName(event.target.value)
-                }
-                value={startCase(userName)}
-                name="lastName"
-                type="text"
-                placeholder="Type here"
-                className="input input-bordered input-sm w-fulls"
-              />
-            </div>
-
-            <Switch
-              label="Remplaçant"
-              isChecked={isSubstitute || (five?.players ?? [])?.length === 10}
-              onToggle={() => setIsSubstitute(!isSubstitute)}
-            />
-          </div>
-
-          <div className="flex w-full gap-2 justify-end mt-6">
-            <form method="dialog">
-              <button className="btn btn-sm btn-ghost">Annuler</button>
-            </form>
-
-            <button
-              disabled={userName.length === 0}
-              onClick={() => handleConfirm()}
-              className="btn btn-sm btn-primary rounded"
-            >
-              Confirmer
-            </button>
-          </div>
+          <input
+            onChange={(event: ChangeEvent<HTMLInputElement>) =>
+              setUserName(event.target.value)
+            }
+            value={startCase(userName)}
+            name="lastName"
+            type="text"
+            placeholder="Type here"
+            className="input input-bordered input-sm w-fulls"
+          />
         </div>
 
-        <form method="dialog" className="modal-backdrop">
-          <button>close</button>
-        </form>
-      </dialog>
-    </>
+        <Switch
+          label="Remplaçant"
+          isChecked={isSubstitute || (five?.players ?? [])?.length === 10}
+          onToggle={() => setIsSubstitute(!isSubstitute)}
+        />
+
+        <div className="flex w-full gap-2 justify-end mt-6">
+          <form method="dialog">
+            <button className="btn btn-sm btn-ghost">Annuler</button>
+          </form>
+
+          <button
+            disabled={userName.length === 0}
+            onClick={() => handleConfirm()}
+            className="btn btn-sm btn-primary rounded"
+          >
+            Confirmer
+          </button>
+        </div>
+      </div>
+
+      <HiddenCloseModalButton />
+    </dialog>
   );
 };

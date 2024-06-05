@@ -1,6 +1,6 @@
 import { create } from "zustand";
-import { Players } from "../models/Players";
-import { Fives } from "../models/Fives";
+import { Players } from "../models/Player";
+import { Fives } from "../models/Five";
 
 type State = {
   players: Players[];

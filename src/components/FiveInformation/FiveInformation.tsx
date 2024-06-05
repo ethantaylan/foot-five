@@ -1,13 +1,14 @@
 import { MapPinIcon } from "@heroicons/react/20/solid";
 import { formatDate } from "../../utils/FormatDate";
+import { FC } from "react";
 
-export interface DateAndPlace {
+export interface FiveInformationProps {
   date: string;
   place: string;
   placeUrl: string;
 }
 
-export default function DateAndPlace({ date, place, placeUrl }: DateAndPlace) {
+export const FiveInformation: FC<FiveInformationProps> = ({ date, place, placeUrl }) => {
   return (
     <div className="flex flex-col">
       <h2 className="font-bold">{formatDate(date)}</h2>
@@ -21,4 +22,4 @@ export default function DateAndPlace({ date, place, placeUrl }: DateAndPlace) {
       </h3>
     </div>
   );
-}
+};

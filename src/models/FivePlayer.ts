@@ -1,4 +1,4 @@
-import { Players, PlayersResponse } from "../Players";
+import { Players, PlayersResponse } from "./Player";
 
 export interface FivePlayerResponse {
   is_substitute: boolean;

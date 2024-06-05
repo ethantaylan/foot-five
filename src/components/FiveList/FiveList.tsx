@@ -1,26 +1,23 @@
 import { useEffect, useState } from "react";
-import { useSupabase } from "../../hooks/useSupabase.ts";
+import { useSupabase } from "../../hooks/UseSupabase.ts";
 import { supabase } from "../../supabase";
-import { useNavigate } from "react-router-dom";
 import { showModal } from "../../utils/ShowModal";
 import { NewFiveModal } from "../NewFiveModal/NewFiveModal";
-import { formatDate } from "../../utils/FormatDate.ts";
-import { Fives, FivesResponse } from "../../models/Fives/index.ts";
-import { Players, PlayersResponse } from "../../models/Players/index.ts";
+import { Players, PlayersResponse } from "../../models/Player.ts";
 import { useUser } from "@clerk/clerk-react";
-import { useGlobalStore } from "../../context/store.tsx";
+import { useGlobalStore } from "../../context/Store.tsx";
 import { Spinner } from "../Spinner/Spinner.tsx";
-import { XCircleIcon } from "@heroicons/react/20/solid";
+import { Modals } from "../../constants/Modals.ts";
+import { Five, FiveResponse } from "../../models/Five.ts";
+import { Fives } from "../Fives/Fives.tsx";
 
 export const FiveList = () => {
-  const { setFive, setPlayerInfo, setPlayers } = useGlobalStore();
-  const navigate = useNavigate();
+  const { setPlayerInfo } = useGlobalStore();
   const { user } = useUser();
-
+  const [fives, setFives] = useState<Five[]>([]);
   const [fiveId, setFiveId] = useState<number>();
-  const [fives, setFives] = useState<Fives[]>([]);
 
-  const getFivesFetch = useSupabase<FivesResponse[]>(
+  const getFivesFetch = useSupabase<FiveResponse[]>(
     () =>
       supabase
         .from("fives")
@@ -30,7 +27,7 @@ export const FiveList = () => {
     true
   );
 
-  const deleteFiveFetch = useSupabase<FivesResponse[]>(
+  const deleteFiveFetch = useSupabase<FiveResponse[]>(
     () => supabase.from("fives").delete().eq("id", fiveId),
     false
   );
@@ -42,7 +39,7 @@ export const FiveList = () => {
 
   useEffect(() => {
     getFivesFetch.response &&
-      setFives(getFivesFetch.response.map((f) => new Fives(f)));
+      setFives(getFivesFetch.response.map((f) => new Five(f)));
   }, [getFivesFetch.response]);
 
   useEffect(() => {
@@ -68,71 +65,11 @@ export const FiveList = () => {
       <h1 className="flex text-xl font-bold">Bienvenue !</h1>
       <h2 className="mt-3 mb-1">Liste des fives</h2>
 
-      <div className="flex flex-col gap-3">
-        {fives && fives.length > 0 ? (
-          fives.map((f) => {
-            const today = new Date();
-            const fiveDate = new Date(f.date);
+      <Fives fives={fives} onRemoveFive={setFiveId} />
 
-            const isPastFive = today.getTime() > fiveDate.getTime();
-
-            return (
-              <div
-                key={f.id}
-                className={`w-full cursor-pointer border-l-4 ${
-                  isPastFive ? "border-red-500" : "border-green-500"
-                } border-opacity-65 bg-white shadow-sm p-2 rounded`}
-              >
-                <div className="flex justify-between">
-                  <h2 className="font-bold">{formatDate(f.date)}</h2>
-
-                  <XCircleIcon
-                    className="size-6 text-error"
-                    onClick={() => {
-                      setFiveId(f.id);
-                    }}
-                  />
-                </div>
-
-                <div
-                  onClick={() => {
-                    navigate(`/${f.id}`);
-                    setFive(f);
-                    setPlayers(f.players);
-                  }}
-                  className="flex flex-col"
-                >
-                  <span className="text-secondary text-sm">
-                    {f.place.replace("Autre", "Lieu non précisé")}
-                  </span>
-
-                  <div className="flex items-center mt-2">
-                    {playerInfoFetch.response &&
-                      !!f.players.find(
-                        (player) => player.id === playerInfoFetch.response?.id
-                      ) && (
-                        <div className="badge badge-sm me-1 rounded badge-accent">
-                          Inscrit
-                        </div>
-                      )}
-
-                    <span className="text-secondary text-xs">
-                      Organisé par:
-                      <span className="font-bold ms-1">{f.organizer}</span>
-                    </span>
-                  </div>
-                </div>
-              </div>
-            );
-          })
-        ) : (
-          <>Pas de fives</>
-        )}
-      </div>
-
-      <div className="flex h-full mt-3 justify-end"></div>
+      <div className="flex h-full mt-3 justify-end" />
       <button
-        onClick={() => showModal("newFiveModal")}
+        onClick={() => showModal(Modals.NEW_FIVE_MODAL)}
         className="btn w-full justify-self-end btn-sm rounded btn-primary"
       >
         Nouveau five

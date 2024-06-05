@@ -1,11 +1,12 @@
 import { FC, useEffect, useState } from "react";
-import { Players } from "../../models/Players/index";
+import { Players } from "../../models/Player";
 import { showModal } from "../../utils/ShowModal";
-import { useGlobalStore } from "../../context/store";
+import { useGlobalStore } from "../../context/Store";
 import { XCircleIcon } from "@heroicons/react/20/solid";
-import { useSupabase } from "../../hooks/useSupabase";
+import { useSupabase } from "../../hooks/UseSupabase";
 import { supabase } from "../../supabase";
 import { useParams } from "react-router-dom";
+import { Modals } from "../../constants/Modals";
 
 export interface ListProps {
   players: Players[] | undefined;
@@ -21,11 +22,9 @@ export const List: FC<ListProps> = ({
   onDeleteUser,
 }) => {
   const { isUserAlreadySubscribed, isUserAdmin } = useGlobalStore();
-
-  const [playerId, setPlayerId] = useState<string>("");
-
   const { id } = useParams();
-
+  const [playerId, setPlayerId] = useState<string>("");
+  
   const deletePlayerFetch = useSupabase<Players>(
     () =>
       supabase
@@ -45,7 +44,7 @@ export const List: FC<ListProps> = ({
   }, [playerId, id]);
 
   return (
-    <div>
+    <>
       <div className="flex justify-between items-end mb-2">
         <span className="text-sm font-bold text-primary">
           {isSubstitutePlayers ? "Remplaçants" : "Joueurs"} ({players?.length})
@@ -55,8 +54,8 @@ export const List: FC<ListProps> = ({
           <button
             onClick={() =>
               isUserAlreadySubscribed
-                ? showModal("confirmModal")
-                : showModal("subscribeModal")
+                ? showModal(Modals.CONFIRM_MODAL)
+                : showModal(Modals.SUBSCRIBE_MODAL)
             }
             className="btn btn-sm btn-primary rounded"
           >
@@ -101,6 +100,6 @@ export const List: FC<ListProps> = ({
             : "Pas de joueurs inscrits"}
         </span>
       )}
-    </div>
+    </>
   );
 };

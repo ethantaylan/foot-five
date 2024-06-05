@@ -1,7 +1,7 @@
-import { FivePlayerResponse } from "../FivePlayer";
-import { Players } from "../Players";
+import { FivePlayerResponse } from "./FivePlayer";
+import { Players } from "./Player";
 
-export interface FivesResponse {
+export interface FiveResponse {
   id: number;
   date: string;
   place: string;
@@ -10,7 +10,7 @@ export interface FivesResponse {
   five_players: FivePlayerResponse[];
 }
 
-export class Fives {
+export class Five {
   id: number;
   date: string;
   place: string;
@@ -25,7 +25,7 @@ export class Fives {
     place_url,
     organizer,
     five_players,
-  }: FivesResponse) {
+  }: FiveResponse) {
     this.date = date;
     this.id = id;
     this.place = place;
