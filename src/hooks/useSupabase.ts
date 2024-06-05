@@ -8,11 +8,11 @@ export interface SupabaseHook<T> {
   executeFetch: () => Promise<void>;
 }
 
-export function useSupabase<T>(
+export const useSupabase = <T>(
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   query: () => any,
   immediate = true
-): SupabaseHook<T> {
+): SupabaseHook<T> => {
   const [response, setResponse] = useState<T | null>(null);
   const [loading, setLoading] = useState<boolean>(false);
   const [error, setError] = useState<PostgrestError | null>(null);
@@ -43,4 +43,4 @@ export function useSupabase<T>(
     error,
     executeFetch,
   };
-}
+};

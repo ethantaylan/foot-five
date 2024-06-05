@@ -1,5 +1,4 @@
 import { useEffect, useState } from "react";
-import { useSupabase } from "../../hooks/UseSupabase";
 import { supabase } from "../../supabase";
 import { Players, PlayersResponse } from "../../models/Player";
 import { ConfirmModal } from "../ConfirmModal/ConfirmModal";
@@ -14,6 +13,7 @@ import { Spinner } from "../Spinner/Spinner";
 import { FiveInformation } from "../FiveInformation/FiveInformation";
 import { closeModal } from "../../utils/CloseModal";
 import { Modals } from "../../constants/Modals";
+import { useSupabase } from "../../hooks/useSupabase";
 
 export default function PlayersList() {
   const { user } = useUser();

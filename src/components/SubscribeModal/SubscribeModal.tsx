@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/clerk-react";
 import { startCase } from "lodash";
 import { ChangeEvent, FC, useState } from "react";
-import { useSupabase } from "../../hooks/UseSupabase";
+import { useSupabase } from "../../hooks/useSupabase";
 import { Players, PlayersResponse } from "../../models/Player";
 import { supabase } from "../../supabase";
 import { Switch } from "../Switch/Switch";
