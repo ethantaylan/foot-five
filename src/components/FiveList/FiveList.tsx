@@ -69,7 +69,7 @@ export const FiveList = () => {
 
       <button
         onClick={() => showModal(Modals.NEW_FIVE_MODAL)}
-        className="btn bottom-0 mt-3 w-full btn-sm rounded btn-primary"
+        className="btn mt-3 w-full btn-sm rounded btn-primary"
       >
         Nouveau five
       </button>
