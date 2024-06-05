@@ -30,7 +30,7 @@ Five is a web application designed to streamline the organization of five-a-side
 1. Clone the repository:
    ```sh
    git clone https://github.com/ethantaylan/foot-five.git
-   cd pentamatch
+   cd foot-five
    ```
 
 2. Install dependencies:
@@ -68,3 +68,5 @@ Contributions are welcome!
 Checkout the todos file. :)
 
 Enjoy !! :) ⚽⚽
+
+(This readme file is partially generated with IA)
