@@ -1,13 +1,13 @@
 import { ChangeEvent, FC, useEffect, useState } from "react";
 import { useSupabase } from "../../hooks/UseSupabase";
 import { supabase } from "../../supabase";
-import { closeModal } from "../../utils/ShowModal";
 import { useUser } from "@clerk/clerk-react";
 import { Players, PlayersResponse } from "../../models/Player";
 import { Modals } from "../../constants/Modals";
 import { FiveResponse } from "../../models/Five";
 import { FivePlaces } from "../../constants/FivePlaces";
 import { HiddenCloseModalButton } from "../HiddenCloseModalButton/HiddenCloseModalButton";
+import { closeModal } from "../../utils/CloseModal";
 
 export interface NewFiveModalProps {
   onConfirm: () => void;

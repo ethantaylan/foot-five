@@ -4,11 +4,11 @@ import { ChangeEvent, FC, useState } from "react";
 import { useSupabase } from "../../hooks/UseSupabase";
 import { Players, PlayersResponse } from "../../models/Player";
 import { supabase } from "../../supabase";
-import { closeModal } from "../../utils/ShowModal";
 import { Switch } from "../Switch/Switch";
 import { Five } from "../../models/Five";
 import { Modals } from "../../constants/Modals";
 import { HiddenCloseModalButton } from "../HiddenCloseModalButton/HiddenCloseModalButton";
+import { closeModal } from "../../utils/CloseModal";
 
 export interface SubscribeModalProps {
   onConfirm: () => void;

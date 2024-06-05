@@ -5,11 +5,11 @@ import { showModal } from "../../utils/ShowModal";
 import { NewFiveModal } from "../NewFiveModal/NewFiveModal";
 import { Players, PlayersResponse } from "../../models/Player.ts";
 import { useUser } from "@clerk/clerk-react";
-import { useGlobalStore } from "../../context/Store.tsx";
 import { Spinner } from "../Spinner/Spinner.tsx";
 import { Modals } from "../../constants/Modals.ts";
 import { Five, FiveResponse } from "../../models/Five.ts";
 import { Fives } from "../Fives/Fives.tsx";
+import { useGlobalStore } from "../../context/Store.tsx";
 
 export const FiveList = () => {
   const { setPlayerInfo } = useGlobalStore();

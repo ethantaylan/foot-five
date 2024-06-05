@@ -1,37 +1,39 @@
-import { create } from "zustand";
+import { create, StoreApi } from "zustand";
 import { Players } from "../models/Player";
-import { Fives } from "../models/Five";
+import { Five } from "../models/Five";
 
-type State = {
-  players: Players[];
-  isUserAlreadySubscribed: boolean | null;
-  five: Fives | null;
-  playerInfo: Players | null;
+interface GlobalState {
   isUserAdmin: boolean | null;
-};
+  isUserAlreadySubscribed: boolean | null;
+  players: Players[];
+  five: Five | null;
+  playerInfo: Players | null;
+}
 
-type Action = {
-  setPlayers: (players: State["players"]) => void;
-  setPlayerIsAlreadySubscribed: (
-    isSubscribed: State["isUserAlreadySubscribed"]
-  ) => void;
-  setFive: (five: State["five"]) => void;
-  setPlayerInfo: (playerInfo: State["playerInfo"]) => void;
-  setIsUserAdmin: (user: State["isUserAdmin"]) => void;
-};
+interface GlobalActions {
+  setIsUserAdmin: (isAdmin: boolean | null) => void;
+  setPlayerInfo: (playerInfo: Players | null) => void;
+  setFive: (five: Five | null) => void;
+  setPlayers: (players: Players[]) => void;
+  setPlayerIsAlreadySubscribed: (isSubscribed: boolean | null) => void;
+}
 
-export const useGlobalStore = create<State & Action>((set) => ({
-  isUserAdmin: null,
-  isUserAlreadySubscribed: null,
-  players: [],
-  five: null,
-  playerInfo: null,
+type GlobalStore = GlobalState & GlobalActions;
 
-  setIsUserAdmin: (isAdmin: boolean | null) =>
-    set(() => ({ isUserAdmin: isAdmin })),
-  setPlayerInfo: (playerInfo: Players | null) => set(() => ({ playerInfo })),
-  setFive: (five: Fives | null) => set(() => ({ five })),
-  setPlayers: (players: Players[]) => set(() => ({ players: players })),
-  setPlayerIsAlreadySubscribed: (isSubcribed: boolean | null) =>
-    set(() => ({ isUserAlreadySubscribed: isSubcribed })),
-}));
+export const useGlobalStore = create<GlobalStore>(
+  (set: StoreApi<GlobalStore>["setState"]) => ({
+    isUserAdmin: null,
+    isUserAlreadySubscribed: null,
+    players: [],
+    five: null,
+    playerInfo: null,
+
+    setIsUserAdmin: (isAdmin) =>
+      set((state) => ({ ...state, isUserAdmin: isAdmin })),
+    setPlayerInfo: (playerInfo) => set((state) => ({ ...state, playerInfo })),
+    setFive: (five) => set((state) => ({ ...state, five })),
+    setPlayers: (players) => set((state) => ({ ...state, players })),
+    setPlayerIsAlreadySubscribed: (isSubscribed) =>
+      set((state) => ({ ...state, isUserAlreadySubscribed: isSubscribed })),
+  })
+);

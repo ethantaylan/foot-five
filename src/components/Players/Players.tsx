@@ -1,12 +1,12 @@
 import { FC, useEffect, useState } from "react";
 import { Players } from "../../models/Player";
 import { showModal } from "../../utils/ShowModal";
-import { useGlobalStore } from "../../context/Store";
 import { XCircleIcon } from "@heroicons/react/20/solid";
 import { useSupabase } from "../../hooks/UseSupabase";
 import { supabase } from "../../supabase";
 import { useParams } from "react-router-dom";
 import { Modals } from "../../constants/Modals";
+import { useGlobalStore } from "../../context/Store";
 
 export interface ListProps {
   players: Players[] | undefined;
