@@ -8,12 +8,12 @@ import { FivePlayerResponse } from "../../models/FivePlayer";
 import { Five, FiveResponse } from "../../models/Five";
 import { useParams } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
-import { useGlobalStore } from "../../context/Store";
 import { Spinner } from "../Spinner/Spinner";
 import { FiveInformation } from "../FiveInformation/FiveInformation";
 import { closeModal } from "../../utils/CloseModal";
 import { Modals } from "../../constants/Modals";
 import { useSupabase } from "../../hooks/useSupabase";
+import { useGlobalStore } from "../../context";
 
 export default function PlayersList() {
   const { user } = useUser();

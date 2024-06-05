@@ -8,8 +8,8 @@ import { Spinner } from "../Spinner/Spinner.tsx";
 import { Modals } from "../../constants/Modals.ts";
 import { Five, FiveResponse } from "../../models/Five.ts";
 import { Fives } from "../Fives/Fives.tsx";
-import { useGlobalStore } from "../../context/Store.tsx";
 import { useSupabase } from "../../hooks/useSupabase.ts";
+import { useGlobalStore } from "../../context/index.tsx";
 
 export const FiveList = () => {
   const { setPlayerInfo } = useGlobalStore();

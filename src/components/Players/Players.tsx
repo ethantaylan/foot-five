@@ -6,7 +6,7 @@ import { useSupabase } from "../../hooks/useSupabase";
 import { supabase } from "../../supabase";
 import { useParams } from "react-router-dom";
 import { Modals } from "../../constants/Modals";
-import { useGlobalStore } from "../../context/Store";
+import { useGlobalStore } from "../../context";
 
 export interface ListProps {
   players: Players[] | undefined;

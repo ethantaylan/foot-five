@@ -2,8 +2,8 @@ import { XCircleIcon } from "@heroicons/react/16/solid";
 import { Five } from "../../models/Five";
 import { FC } from "react";
 import { formatDate } from "../../utils/FormatDate";
-import { useGlobalStore } from "../../context/Store";
 import { useNavigate } from "react-router-dom";
+import { useGlobalStore } from "../../context";
 
 export interface FivesProps {
   fives: Five[];
