@@ -1,66 +1,70 @@
-Five-a-Side Football Organizer
-Description
-A web application to organize five-a-side football matches with substitutes. Built with React and TypeScript, using Clerk for authentication and Supabase for the database. Deployed on Vercel.
+# Five ⚽ - Five-a-Side Football Organizer
 
-Technologies
-React
-TypeScript
-Clerk
-Supabase
-Zustand
-React Router
-Axios
-DaisyUI
-Heroicons
-Lodash
-Installation
-Clone the repository:
+Five is a web application designed to streamline the organization of five-a-side football matches, complete with substitutes. Built with React, TypeScript, Clerk for authentication, and Supabase for the database, PentaMatch offers a modern and intuitive platform for managing your football games.
 
-sh
-Copier le code
-git clone https://github.com/your-username/your-repo.git
-cd your-repo
-Install dependencies:
+![tempsnip](https://github.com/ethantaylan/foot-five/assets/59540282/155d8c5b-1e58-44df-968e-24131677a538)
 
-sh
-Copier le code
-npm install
-Configure environment variables in a .env file:
+## Features
 
-env
-Copier le code
-REACT_APP_CLERK_FRONTEND_API=<your_clerk_frontend_api>
-REACT_APP_SUPABASE_URL=<your_supabase_url>
-REACT_APP_SUPABASE_ANON_KEY=<your_supabase_anon_key>
-Start the application:
+- **Player Management:** Easily add, remove, and update player information.
+- **Substitute Integration:** Seamlessly include substitutes in your matches.
+- **User Authentication:** Secure login and authentication powered by Clerk.
+- **Real-time Updates:** Keep track of match details in real-time.
+- **Responsive Design:** Enjoy a smooth experience across all devices.
 
-sh
-Copier le code
-npm start
-Authentication
-Authentication is handled by Clerk. Configure Clerk in src/index.tsx:
+## Technologies Used
 
-tsx
-Copier le code
-import React from 'react';
-import ReactDOM from 'react-dom';
-import { ClerkProvider } from '@clerk/clerk-react';
-import App from './App';
+- React
+- TypeScript
+- Clerk
+- Supabase
+- Zustand
+- React Router
+- Axios
+- DaisyUI
+- Heroicons
+- Lodash
 
-const frontendApi = process.env.REACT_APP_CLERK_FRONTEND_API!;
+## Installation
 
-ReactDOM.render(
-<ClerkProvider frontendApi={frontendApi}>
-<App />
-</ClerkProvider>,
-document.getElementById('root')
-);
-Deployment on Vercel
-Import the project to Vercel.
-Configure environment variables:
-REACT_APP_CLERK_FRONTEND_API
-REACT_APP_SUPABASE_URL
-REACT_APP_SUPABASE_ANON_KEY
-Deploy.
-License
-This project is licensed under the MIT License.
+1. Clone the repository:
+   ```sh
+   git clone https://github.com/ethantaylan/foot-five.git
+   cd pentamatch
+   ```
+
+2. Install dependencies:
+   ```sh
+   npm install
+   ```
+
+3. Set up environment variables:
+   Create a `.env` file in the root directory and add the following:
+   ```env
+   VITE_CLERK_PUBLISHABLE_KEY=<your_clerk_publishable_key>
+   VITE_SUPABASE_URLL=<your_supabase_url>
+   VITE_SUPABASE_KEY=<your_supabase_anon_key>
+   ```
+
+4. Start the application:
+   ```sh
+   npm run dev
+   ```
+
+## Usage
+
+1. Sign up for an account or log in if you already have one.
+2. Create a new five then subcribe for as a player or substitute.
+3. Send url to your friends !
+
+## Deployment
+
+This project can be deployed to Vercel.
+
+## Contributing
+
+Contributions are welcome! 
+
+Checkout the todos file. :)
+
+Enjoy !! :) ⚽⚽
