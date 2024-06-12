@@ -1,5 +1,5 @@
-import { useState, useEffect } from "react";
 import { PostgrestError } from "@supabase/supabase-js";
+import { useEffect, useState } from "react";
 
 export interface SupabaseHook<T> {
   response: T | null;
@@ -21,16 +21,15 @@ export const useSupabase = <T>(
     setLoading(true);
     setError(null);
 
-    let request;
+    const { data, error } = await query();
 
-    try {
-      request = await query();
-      setResponse(request.data);
-    } catch (error) {
-      setError(request.error);
-    } finally {
-      setLoading(false);
+    if (error) {
+      setError(error);
+    } else {
+      setResponse(data);
     }
+
+    setLoading(false);
   };
 
   useEffect(() => {

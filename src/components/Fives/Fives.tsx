@@ -42,7 +42,7 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
 
               <div
                 onClick={() => {
-                  navigate(`/${f.id}`);
+                  navigate(`/fives/${f.id}`);
                   setFive(f);
                   setPlayers(f.players);
                 }}
