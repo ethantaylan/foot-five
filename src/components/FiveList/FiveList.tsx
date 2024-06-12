@@ -34,8 +34,12 @@ export const FiveList = () => {
 
   const playerInfoFetch = useSupabase<PlayersResponse>(
     () => supabase.from("players").select().eq("user_id", user?.id).single(),
-    true
+    false
   );
+
+  useEffect(() => {
+    user && playerInfoFetch.executeFetch();
+  }, [user]);
 
   useEffect(() => {
     getFivesFetch.response &&

@@ -11,7 +11,7 @@ export interface FivesProps {
 }
 
 export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
-  const { setFive, setPlayers, playerInfo } = useGlobalStore();
+  const { setFive, setPlayers, playerInfo, isUserAdmin } = useGlobalStore();
   const navigate = useNavigate();
 
   return (
@@ -32,12 +32,14 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
               <div className="flex justify-between">
                 <h2 className="font-bold">{formatDate(f.date)}</h2>
 
-                <XCircleIcon
-                  className="size-6 text-error"
-                  onClick={() => {
-                    onRemoveFive(f.id);
-                  }}
-                />
+                {isUserAdmin && (
+                  <XCircleIcon
+                    className="size-6 text-error"
+                    onClick={() => {
+                      onRemoveFive(f.id);
+                    }}
+                  />
+                )}
               </div>
 
               <div

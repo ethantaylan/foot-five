@@ -36,7 +36,7 @@ export default function PlayersList() {
 
   const playerInfoFetch = useSupabase<PlayersResponse>(
     () => supabase.from("players").select().eq("user_id", user?.id).single(),
-    true
+    false
   );
 
   const getFivesFetch = useSupabase<FiveResponse>(
@@ -61,6 +61,10 @@ export default function PlayersList() {
   );
 
   useEffect(() => {
+    user && playerInfoFetch.executeFetch();
+  }, [user]);
+
+  useEffect(() => {
     playerInfoFetch.response &&
       setPlayerInfo(new Players(playerInfoFetch.response));
   }, [playerInfoFetch.response]);
@@ -74,7 +78,7 @@ export default function PlayersList() {
   }, [getFivesFetch.response]);
 
   useEffect(() => {
-    if (five) {
+    if (playerInfo && five) {
       setPlayerIsAlreadySubscribed(
         five.players.some(
           (player) => player?.userId === (playerInfo?.userId ?? "")
@@ -84,7 +88,7 @@ export default function PlayersList() {
       setTitulars(five.players.filter((player) => !player.isSubstitute));
       setSubstitutes(five.players.filter((player) => player.isSubstitute));
     }
-  }, [five]);
+  }, [five, playerInfo]);
 
   const handleSubscribeModalConfirmation = () => {
     getFivePlayersFetch.executeFetch().then(() => {
