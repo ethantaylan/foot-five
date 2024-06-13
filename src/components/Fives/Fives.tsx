@@ -4,6 +4,7 @@ import { FC } from "react";
 import { formatDate } from "../../utils/FormatDate";
 import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../context";
+import { FivePlayersAvatar } from "../FivePlayersAvatar/FivePlayersAvatar";
 
 export interface FivesProps {
   fives: Five[];
@@ -29,12 +30,20 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
                 isPastFive ? "border-red-500" : "border-green-500"
               } border-opacity-65 bg-white shadow-sm p-2 rounded`}
             >
-              <div className="flex justify-between">
+              <div className="flex relative items-center justify-between">
                 <h2 className="font-bold">{formatDate(f.date)}</h2>
+
+                {playerInfo &&
+                  !!f.players.find((player) => player.id === playerInfo.id) && (
+                    <div className="badge badge-sm me-1 rounded badge-accent">
+                      Inscrit
+                    </div>
+                  )}
 
                 {isUserAdmin && (
                   <XCircleIcon
-                    className="size-6 text-error"
+                    style={{ right: 10, top: 40 }}
+                    className="size-6 absolute  text-error"
                     onClick={() => {
                       onRemoveFive(f.id);
                     }}
@@ -54,16 +63,9 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
                   {f.place.replace("Autre", "Lieu non précisé")}
                 </span>
 
-                <div className="flex items-center mt-2">
-                  {playerInfo &&
-                    !!f.players.find(
-                      (player) => player.id === playerInfo.id
-                    ) && (
-                      <div className="badge badge-sm me-1 rounded badge-accent">
-                        Inscrit
-                      </div>
-                    )}
+                <FivePlayersAvatar players={f.players} />
 
+                <div className="flex items-center mt-2">
                   <span className="text-secondary text-xs">
                     Organisé par:
                     <span className="font-bold ms-1">{f.organizer}</span>
