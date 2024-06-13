@@ -65,7 +65,12 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
 
                 <FivePlayersAvatar players={f.players} />
 
-                <div className="flex items-center mt-2">
+                <div className="flex gap-3 items-center">
+                  <span className="text-secondary text-xs">
+                    Duration:
+                    <span className="font-bold ms-1">{f.duration}</span>
+                  </span>
+
                   <span className="text-secondary text-xs">
                     Organisé par:
                     <span className="font-bold ms-1">{f.organizer}</span>
