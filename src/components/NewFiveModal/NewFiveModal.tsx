@@ -8,6 +8,7 @@ import { FivePlaces } from "../../constants/FivePlaces";
 import { HiddenCloseModalButton } from "../HiddenCloseModalButton/HiddenCloseModalButton";
 import { closeModal } from "../../utils/CloseModal";
 import { useSupabase } from "../../hooks/useSupabase";
+import { useGlobalStore } from "../../context";
 
 export interface NewFiveModalProps {
   onConfirm: () => void;
@@ -16,10 +17,13 @@ export interface NewFiveModalProps {
 export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
   const [fiveDate, setFiveDate] = useState<string>("");
   const [fivePlace, setFivePlace] = useState<string>("");
+  const [fiveOtherPlace, setFiveOtherPlace] = useState<string>("");
   const [fiveDuration, setFiveDuration] = useState<string>("0");
   const [player, setPlayer] = useState<Players>();
 
   const { user } = useUser();
+
+  const { setIsOtherPlace, isOtherPlace } = useGlobalStore();
 
   const handlePlaceUrl = () => {
     switch (fivePlace) {
@@ -43,6 +47,18 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
     playerInfoFetch.response &&
       setPlayer(new Players(playerInfoFetch.response));
   }, [playerInfoFetch.response]);
+
+  useEffect(() => {
+    if (fivePlace === FivePlaces.AUTRE) {
+      setIsOtherPlace(true);
+    }
+
+    console.log(fivePlace, "from NewFiveModal.tsx")
+  }, [fivePlace]);
+
+  useEffect(() => {
+    console.log(isOtherPlace);
+  }, [isOtherPlace]);
 
   const handleIsFiveValid = () => {
     const selectedDate = new Date(fiveDate);
@@ -74,9 +90,9 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
         .insert([
           {
             date: fiveDate,
-            place: fivePlace,
+            place: fivePlace === FivePlaces.AUTRE ? fiveOtherPlace : fivePlace,
             place_url: handlePlaceUrl(),
-            organizer: player?.userName,
+            organizer: { username: player?.userName, id: player?.userId },
             duration: formattedFiveDuration(),
           },
         ])
@@ -143,7 +159,7 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
             }
             className="select select-sm select-bordered w-full"
           >
-            <option disabled selected>
+            <option disabled defaultValue="Selectionner le lieu">
               Selectionner le lieu
             </option>
 
@@ -151,6 +167,17 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
               <option key={place}>{place}</option>
             ))}
           </select>
+
+          {fivePlace === FivePlaces.AUTRE && (
+            <input
+              onChange={(e: ChangeEvent<HTMLInputElement>) =>
+                setFiveOtherPlace(e.target.value)
+              }
+              type="text"
+              className="input input-bordered w-full input-sm mt-3"
+              placeholder="Lieu..."
+            />
+          )}
         </div>
 
         <div className="flex w-full gap-2 justify-end mt-6">
@@ -158,6 +185,7 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
             disabled={
               fiveDate.length === 0 ||
               fivePlace.length === 0 ||
+              (fivePlace === FivePlaces.AUTRE && fiveOtherPlace.length === 0) ||
               handleIsFiveValid()
             }
             onClick={() =>

@@ -1,6 +1,6 @@
 import { create, StoreApi } from "zustand";
 import { Players } from "../models/Player";
-import { Five } from "../models/Five";
+import { Five, Organizer } from "../models/Five";
 
 interface GlobalState {
   isUserAdmin: boolean | null;
@@ -8,6 +8,8 @@ interface GlobalState {
   players: Players[];
   five: Five | null;
   playerInfo: Players | null;
+  organizer: Organizer | null;
+  isOtherPlace: boolean | null;
 }
 
 interface GlobalActions {
@@ -16,6 +18,8 @@ interface GlobalActions {
   setFive: (five: Five | null) => void;
   setPlayers: (players: Players[]) => void;
   setPlayerIsAlreadySubscribed: (isSubscribed: boolean | null) => void;
+  setOrganizer: (organizer: Organizer | null) => void;
+  setIsOtherPlace: (isOtherPlace: boolean | null) => void;
 }
 
 type GlobalStore = GlobalState & GlobalActions;
@@ -27,7 +31,12 @@ export const useGlobalStore = create<GlobalStore>(
     players: [],
     five: null,
     playerInfo: null,
+    organizer: null,
+    isOtherPlace: null,
 
+    setIsOtherPlace: (isOtherPlace) =>
+      set((state) => ({ ...state, isOtherPlace })),
+    setOrganizer: (organizer) => set((state) => ({ ...state, organizer })),
     setIsUserAdmin: (isAdmin) =>
       set((state) => ({ ...state, isUserAdmin: isAdmin })),
     setPlayerInfo: (playerInfo) => set((state) => ({ ...state, playerInfo })),

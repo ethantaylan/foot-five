@@ -12,12 +12,13 @@ export interface FivesProps {
 }
 
 export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
-  const { setFive, setPlayers, playerInfo, isUserAdmin } = useGlobalStore();
+  const { setFive, setPlayers, playerInfo, isUserAdmin, setOrganizer } =
+    useGlobalStore();
   const navigate = useNavigate();
 
   return (
     <div className="flex flex-col gap-3">
-      {fives && fives.length > 0 ? (
+      {playerInfo && fives && fives.length > 0 ? (
         fives.map((f) => {
           const today = new Date();
           const fiveDate = new Date(f.date);
@@ -33,20 +34,17 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
               <div className="flex relative items-center justify-between">
                 <h2 className="font-bold">{formatDate(f.date)}</h2>
 
-                {playerInfo &&
-                  !!f.players.find((player) => player.id === playerInfo.id) && (
-                    <div className="badge badge-sm me-1 rounded badge-accent">
-                      Inscrit
-                    </div>
-                  )}
+                {!!f.players.find((player) => player.id === playerInfo.id) && (
+                  <div className="badge badge-sm me-1 rounded badge-accent">
+                    Inscrit
+                  </div>
+                )}
 
                 {isUserAdmin && (
                   <XCircleIcon
                     style={{ right: 10, top: 40 }}
                     className="size-6 absolute  text-error"
-                    onClick={() => {
-                      onRemoveFive(f.id);
-                    }}
+                    onClick={() => onRemoveFive(f.id)}
                   />
                 )}
               </div>
@@ -56,6 +54,7 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
                   navigate(`/fives/${f.id}`);
                   setFive(f);
                   setPlayers(f.players);
+                  setOrganizer(f.organizer);
                 }}
                 className="flex flex-col"
               >
@@ -73,7 +72,9 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
 
                   <span className="text-secondary text-xs">
                     Organisé par:
-                    <span className="font-bold ms-1">{f.organizer}</span>
+                    <span className="font-bold ms-1">
+                      {f.organizer?.username || "N/A"}
+                    </span>
                   </span>
                 </div>
               </div>

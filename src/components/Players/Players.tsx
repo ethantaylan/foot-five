@@ -22,9 +22,10 @@ export const List: FC<ListProps> = ({
   onDeleteUser,
 }) => {
   const { isUserAlreadySubscribed, isUserAdmin } = useGlobalStore();
+
   const { id } = useParams();
   const [playerId, setPlayerId] = useState<string>("");
-  
+
   const deletePlayerFetch = useSupabase<Players>(
     () =>
       supabase
@@ -50,18 +51,20 @@ export const List: FC<ListProps> = ({
           {isSubstitutePlayers ? "Remplaçants" : "Joueurs"} ({players?.length})
         </span>
 
-        {withSubscriptionButton && (
-          <button
-            onClick={() =>
-              isUserAlreadySubscribed
-                ? showModal(Modals.CONFIRM_MODAL)
-                : showModal(Modals.SUBSCRIBE_MODAL)
-            }
-            className="btn btn-sm btn-primary rounded"
-          >
-            {isUserAlreadySubscribed ? "Se désinscrire" : "S'inscrire"}
-          </button>
-        )}
+        <div className="flex gap-2">
+          {withSubscriptionButton && (
+            <button
+              onClick={() =>
+                isUserAlreadySubscribed
+                  ? showModal(Modals.CONFIRM_MODAL)
+                  : showModal(Modals.SUBSCRIBE_MODAL)
+              }
+              className="btn btn-sm btn-primary rounded"
+            >
+              {isUserAlreadySubscribed ? "Se désinscrire" : "S'inscrire"}
+            </button>
+          )}
+        </div>
       </div>
 
       {players && players.length > 0 ? (

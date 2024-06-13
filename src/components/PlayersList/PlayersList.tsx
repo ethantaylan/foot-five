@@ -122,30 +122,36 @@ export default function PlayersList() {
           playerInfo={playerInfo}
         />
 
-        <div className="flex flex-col w-full gap-5">
-          <FiveInformation
-            date={five.date}
-            place={five.place}
-            placeUrl={five.placeUrl}
-          />
+        <div className="flex flex-col w-full">
+          <div className="mb-2">
+            <FiveInformation
+              date={five.date}
+              place={five.place}
+              placeUrl={five.placeUrl}
+            />
+          </div>
 
-          <List
-            withSubscriptionButton={true}
-            players={titulars}
-            onDeleteUser={() => {
-              getFivePlayersFetch.executeFetch();
-              getFivesFetch.executeFetch();
-            }}
-          />
+          <div className="mb-10">
+            <List
+              withSubscriptionButton={true}
+              players={titulars}
+              onDeleteUser={() => {
+                getFivePlayersFetch.executeFetch();
+                getFivesFetch.executeFetch();
+              }}
+            />
+          </div>
 
-          <List
-            isSubstitutePlayers
-            players={substitutes}
-            onDeleteUser={() => {
-              getFivePlayersFetch.executeFetch();
-              getFivesFetch.executeFetch();
-            }}
-          />
+          <div className="pb-5">
+            <List
+              isSubstitutePlayers
+              players={substitutes}
+              onDeleteUser={() => {
+                getFivePlayersFetch.executeFetch();
+                getFivesFetch.executeFetch();
+              }}
+            />
+          </div>
         </div>
       </div>
     )

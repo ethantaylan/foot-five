@@ -26,25 +26,29 @@ export default function Header() {
 
     const intervalId = setInterval(updateDate, 1000);
 
-    // Initial date update
     updateDate();
 
-    // Cleanup interval on component unmount
     return () => clearInterval(intervalId);
   }, []);
 
   return (
-    <div className="flex mb-2 justify-between">
+    <div className="flex mb-2">
       {!["/", "onsignup"].includes(pathname) && (
-        <ArrowLeftIcon
-          onClick={() => navigate("/")}
-          className="size-6 cursor-pointer"
-        />
+        <div className="flex items-center">
+          <ArrowLeftIcon
+            onClick={() => navigate("/")}
+            className="size-6 me-4 cursor-pointer"
+          />
+        </div>
       )}
-      <button className="font-black text-xl">FIVE ⚽</button>
-      <div className="flex items-center">
-        <span className="text-xs me-2 badge bg-opacity-65 rounded border shadow-md">{date}</span>
-        <Profil />
+      <div className="flex justify-between w-full">
+        <button className="font-black text-xl">FIVE ⚽</button>
+        <div className="flex items-center">
+          <span className="text-xs me-2 badge bg-opacity-65 rounded border shadow-md">
+            {date}
+          </span>
+          <Profil />
+        </div>
       </div>
     </div>
   );
