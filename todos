@@ -1,13 +1,9 @@
 Features:
     Ability to edit five information
-    Add subscribed players in fives card
     Error handling
     Add Real-time with supabase
-    Add current date and time
 
 Fixes:
-    Empty five organizer username
-    2 fives can be created at the same time
 
 Tests: 
     Add unit tests
