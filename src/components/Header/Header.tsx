@@ -8,7 +8,7 @@ export default function Header() {
 
   return (
     <div className="flex mb-2 justify-between">
-      {pathname !== "/" && (
+      {!["/", "onsignup"].includes(pathname) && (
         <ArrowLeftIcon
           onClick={() => navigate("/")}
           className="size-6 cursor-pointer"

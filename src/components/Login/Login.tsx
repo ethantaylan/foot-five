@@ -4,7 +4,9 @@ export default function Login() {
   return (
     <SignedOutClerk>
       <div className="flex items-center h-full justify-center">
-        <SignIn />
+        <SignIn
+          fallbackRedirectUrl="/onsignup"
+        />
       </div>
     </SignedOutClerk>
   );
