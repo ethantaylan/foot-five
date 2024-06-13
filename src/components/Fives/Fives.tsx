@@ -1,10 +1,10 @@
 import { XCircleIcon } from "@heroicons/react/16/solid";
 import { Five } from "../../models/Five";
 import { FC } from "react";
-import { formatDate } from "../../utils/FormatDate";
 import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../context";
 import { FivePlayersAvatar } from "../FivePlayersAvatar/FivePlayersAvatar";
+import { formatDate } from "../../utils/FormatDate";
 
 export interface FivesProps {
   fives: Five[];
@@ -76,7 +76,9 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
           );
         })
       ) : (
-        <h6 className="my-5 font-bold">Pas de fives 😩</h6>
+        <h6 className="my-5 rounded alert alert-primary shadow-md">
+          {"Il n'y a pas de fives d'organisés :("}
+        </h6>
       )}
     </div>
   );
