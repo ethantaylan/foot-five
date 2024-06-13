@@ -1,9 +1,9 @@
 import { XCircleIcon } from "@heroicons/react/16/solid";
 import { Five } from "../../models/Five";
 import { FC } from "react";
-import { formatDate } from "../../utils/FormatDate";
 import { useNavigate } from "react-router-dom";
 import { useGlobalStore } from "../../context";
+import { formatDate } from "../../utils/FormatDate";
 
 export interface FivesProps {
   fives: Five[];
@@ -54,7 +54,7 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
                   {f.place.replace("Autre", "Lieu non précisé")}
                 </span>
 
-                <div className="flex items-center mt-2">
+                <div className="flex items-center">
                   {playerInfo &&
                     !!f.players.find(
                       (player) => player.id === playerInfo.id
@@ -64,17 +64,25 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
                       </div>
                     )}
 
-                  <span className="text-secondary text-xs">
-                    Organisé par:
-                    <span className="font-bold ms-1">{f.organizer}</span>
-                  </span>
+                  <div className="flex gap-3">
+                    <span className="text-secondary text-xs">
+                      Duration:
+                      <span className="font-bold ms-1">{f.duration}</span>
+                    </span>
+                    <span className="text-secondary text-xs">
+                      Organisé par:
+                      <span className="font-bold ms-1">{f.organizer}</span>
+                    </span>
+                  </div>
                 </div>
               </div>
             </div>
           );
         })
       ) : (
-        <h6 className="my-5 rounded alert alert-primary shadow-md">{"Il n'y a pas de fives organisés :("}</h6>
+        <h6 className="my-5 rounded alert alert-primary shadow-md">
+          {"Il n'y a pas de fives d'organisés :("}
+        </h6>
       )}
     </div>
   );

@@ -1,9 +1,9 @@
 Features:
-    Add five duration
     Ability to edit five information
     Add subscribed players in fives card
     Error handling
     Add Real-time with supabase
+    Add current date and time
 
 Fixes:
     Empty five organizer username

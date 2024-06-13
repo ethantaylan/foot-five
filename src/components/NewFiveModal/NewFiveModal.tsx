@@ -16,7 +16,7 @@ export interface NewFiveModalProps {
 export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
   const [fiveDate, setFiveDate] = useState<string>("");
   const [fivePlace, setFivePlace] = useState<string>("");
-  const [fiveTime, setFiveTime] = useState<string>("0");
+  const [fiveDuration, setFiveDuration] = useState<string>("0");
   const [player, setPlayer] = useState<Players>();
 
   const { user } = useUser();
@@ -44,6 +44,29 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
       setPlayer(new Players(playerInfoFetch.response));
   }, [playerInfoFetch.response]);
 
+  const handleIsFiveValid = () => {
+    const selectedDate = new Date(fiveDate);
+    const now = new Date();
+
+    if (selectedDate < now) {
+      return true;
+    }
+    return false;
+  };
+
+  const formattedFiveDuration = () => {
+    switch (fiveDuration) {
+      case "0":
+        return "1h00";
+
+      case "1":
+        return "1h30";
+
+      case "2":
+        return "2h00";
+    }
+  };
+
   const addNewFiveFetch = useSupabase<FiveResponse[]>(
     () =>
       supabase
@@ -54,24 +77,19 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
             place: fivePlace,
             place_url: handlePlaceUrl(),
             organizer: player?.userName,
+            duration: formattedFiveDuration(),
           },
         ])
         .select(),
     false
   );
 
-  useEffect(() => {
-    console.log(fiveTime)
-  }, [fiveTime])
-
   return (
     <dialog id={Modals.NEW_FIVE_MODAL} className="modal">
       <HiddenCloseModalButton />
 
       <div className="modal-box">
-        <div className="flex mb-5 items-center justify-between">
-          <h3 className="font-bold text-lg">Nouveau five</h3>
-        </div>
+        <h3 className="font-bold mb-5 text-lg">Nouveau five</h3>
 
         <div className="mb-5">
           <label htmlFor="set-five-date" className="label-text">
@@ -84,23 +102,25 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
               setFiveDate(event.target.value)
             }
             className="input input-bordered input-sm w-full"
-            type="date"
+            type="datetime-local"
           />
+          {handleIsFiveValid() && (
+            <p className="text-red-500">La date sélectionnée est passée.</p>
+          )}
         </div>
 
         <div className="mb-5">
-          <label htmlFor="set-five-date" className="label-text">
+          <label htmlFor="set-five-duration" className="label-text">
             Durée
           </label>
-
           <input
             onChange={(event: ChangeEvent<HTMLInputElement>) =>
-              setFiveTime(event.target.value)
+              setFiveDuration(event.target.value)
             }
             type="range"
             min="0"
             max="2"
-            value={fiveTime}
+            value={fiveDuration}
             className="range"
             step="1"
           />
@@ -116,7 +136,6 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
           <label htmlFor="set-five-place" className="label-text">
             Lieu
           </label>
-
           <select
             name="set-five-place"
             onChange={(event: ChangeEvent<HTMLSelectElement>) =>
@@ -136,7 +155,11 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
 
         <div className="flex w-full gap-2 justify-end mt-6">
           <button
-            disabled={fiveDate.length === 0 || fivePlace.length === 0}
+            disabled={
+              fiveDate.length === 0 ||
+              fivePlace.length === 0 ||
+              handleIsFiveValid()
+            }
             onClick={() =>
               addNewFiveFetch.executeFetch().then(() => {
                 onConfirm();
