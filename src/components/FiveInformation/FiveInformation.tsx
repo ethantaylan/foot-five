@@ -1,42 +1,62 @@
 import { MapPinIcon } from "@heroicons/react/20/solid";
 import { formatDate } from "../../utils/FormatDate";
 import { FC } from "react";
-import { useGlobalStore } from "../../context";
 import { FivePlaces } from "../../constants/FivePlaces";
-import { useUser } from "@clerk/clerk-react";
+import { showModal } from "../../utils/ShowModal";
+import { Modals } from "../../constants/Modals";
+import { Five } from "../../models/Five";
+import { Players } from "../../models/Player";
 
 export interface FiveInformationProps {
-  date: string;
-  place: string;
-  placeUrl: string;
+  five: Five;
+  playerInfo: Players;
 }
 
 export const FiveInformation: FC<FiveInformationProps> = ({
-  date,
-  place,
-  placeUrl,
+  playerInfo,
+  five,
 }) => {
-  const { playerInfo, organizer } = useGlobalStore();
-  const { user } = useUser();
-
   return (
     <div className="flex flex-col">
-      <h2 className="font-bold">{formatDate(date)}</h2>
+      <h2 className="font-bold">{formatDate(five.date)}</h2>
 
       <h3 className="text-secondary flex text-sm">
-        {place}
-        {Object.values(FivePlaces).includes(place as FivePlaces) && (
+        {five.place}
+        {Object.values(FivePlaces).includes(five.place as FivePlaces) && (
           <MapPinIcon
-            onClick={() => window.open(placeUrl)}
+            onClick={() => window.open(five.placeUrl, "_blank")}
             className="size-5 ms-1"
           />
         )}
       </h3>
-      <div>
-        {user && organizer?.userId === playerInfo?.userId && (
-          <button className="text-md underline">Modifier</button>
-        )}
+      <div className="flex items-center gap-2">
+        <h3 className="text-secondary text-sm">
+          Organisé par:{" "}
+          <span className="font-semibold">{five.organizer.username}</span>
+        </h3>
+        <h3 className="text-secondary text-sm">
+          Durée: <span className="font-semibold">{five.duration}</span>
+        </h3>
       </div>
+
+      {five.organizer?.id === playerInfo?.userId && (
+        <div className="flex gap-2">
+          <button
+            onClick={() => showModal(Modals.EDIT_FIVE_MODAL)}
+            className="text-sm underline"
+          >
+            Modifier
+          </button>
+
+          <button
+            onClick={() => showModal(Modals.REMOVE_FIVE_MODAL)}
+            className="text-sm underline text-red-500"
+          >
+            Supprimer
+          </button>
+        </div>
+      )}
+      <div className="divider my-1" />
     </div>
   );
 };

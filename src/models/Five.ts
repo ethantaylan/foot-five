@@ -3,7 +3,7 @@ import { Players } from "./Player";
 
 export interface Organizer {
   username: string;
-  userId: string;
+  id: string;
 }
 
 export interface FiveResponse {

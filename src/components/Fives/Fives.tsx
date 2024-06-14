@@ -12,8 +12,7 @@ export interface FivesProps {
 }
 
 export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
-  const { setFive, setPlayers, playerInfo, isUserAdmin, setOrganizer } =
-    useGlobalStore();
+  const { setFive, setPlayers, playerInfo, isUserAdmin } = useGlobalStore();
   const navigate = useNavigate();
 
   return (
@@ -54,7 +53,6 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
                   navigate(`/fives/${f.id}`);
                   setFive(f);
                   setPlayers(f.players);
-                  setOrganizer(f.organizer);
                 }}
                 className="flex flex-col"
               >
@@ -66,7 +64,7 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
 
                 <div className="flex gap-3 items-center">
                   <span className="text-secondary text-xs">
-                    Duration:
+                    Durée:
                     <span className="font-bold ms-1">{f.duration}</span>
                   </span>
 

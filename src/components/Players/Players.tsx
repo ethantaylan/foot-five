@@ -46,10 +46,17 @@ export const List: FC<ListProps> = ({
 
   return (
     <>
-      <div className="flex justify-between items-end mb-2">
-        <span className="text-sm font-bold text-primary">
-          {isSubstitutePlayers ? "Remplaçants" : "Joueurs"} ({players?.length})
-        </span>
+      <div className="flex justify-between mb-2 items-end">
+        <div className="flex flex-col">
+          <span className="text-sm font-bold text-primary">
+            {isSubstitutePlayers ? "Remplaçants" : "Joueurs"} ({players?.length}
+            )
+          </span>
+
+          <span className="text-sm mt-1">
+            {players?.length === 0 && `Pas de ${isSubstitutePlayers ? 'remplaçants' : 'joueurs'} inscrits`}
+          </span>
+        </div>
 
         <div className="flex gap-2">
           {withSubscriptionButton && (
@@ -67,7 +74,7 @@ export const List: FC<ListProps> = ({
         </div>
       </div>
 
-      {players && players.length > 0 ? (
+      {players && (
         <ul className="flex flex-col gap-2 p-0">
           {players.map((player, index) => (
             <li
@@ -96,12 +103,6 @@ export const List: FC<ListProps> = ({
             </li>
           ))}
         </ul>
-      ) : (
-        <span className="text-secondary text-sm">
-          {isSubstitutePlayers
-            ? "Pas de remplaçants inscrits"
-            : "Pas de joueurs inscrits"}
-        </span>
       )}
     </>
   );
