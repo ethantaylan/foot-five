@@ -1,11 +1,12 @@
 import { FC } from "react";
-import { Modals } from "../../constants/Modals";
 
 export interface ConfirmModalProps {
   onConfirm: () => void;
+  title: string;
+  modalId: string;
 }
 
-const HiddenCloseModalButton: FC<{ label: string }> = ({ label }) => {
+const HiddenCloseModalButton: FC<{ label?: string }> = ({ label }) => {
   return (
     <form method="dialog">
       <button className="btn btn-sm btn-ghost">{label}</button>
@@ -13,11 +14,15 @@ const HiddenCloseModalButton: FC<{ label: string }> = ({ label }) => {
   );
 };
 
-export const ConfirmModal: FC<ConfirmModalProps> = ({ onConfirm }) => {
+export const ConfirmModal: FC<ConfirmModalProps> = ({
+  onConfirm,
+  title,
+  modalId,
+}) => {
   return (
-    <dialog id={Modals.CONFIRM_MODAL} className="modal">
+    <dialog id={modalId} className="modal">
       <div className="modal-box">
-        <h3 className="font-bold text-lg">Désinscription</h3>
+        <h3 className="font-bold text-lg">{title}</h3>
 
         <p className="mt-5">Êtes-vous sûr(e) ?</p>
 
@@ -33,7 +38,7 @@ export const ConfirmModal: FC<ConfirmModalProps> = ({ onConfirm }) => {
         </div>
       </div>
 
-      <HiddenCloseModalButton label="" />
+      <HiddenCloseModalButton />
     </dialog>
   );
 };

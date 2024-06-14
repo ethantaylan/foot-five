@@ -6,7 +6,7 @@ import { List } from "../Players/Players";
 import { SubscribeModal } from "../SubscribeModal/SubscribeModal";
 import { FivePlayerResponse } from "../../models/FivePlayer";
 import { Five, FiveResponse } from "../../models/Five";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { Spinner } from "../Spinner/Spinner";
 import { FiveInformation } from "../FiveInformation/FiveInformation";
@@ -14,6 +14,7 @@ import { closeModal } from "../../utils/CloseModal";
 import { Modals } from "../../constants/Modals";
 import { useSupabase } from "../../hooks/useSupabase";
 import { useGlobalStore } from "../../context";
+import { EditFiveModal } from "../EditFiveModal/EditFiveModal";
 
 export default function PlayersList() {
   const { user } = useUser();
@@ -24,6 +25,7 @@ export default function PlayersList() {
   const { setPlayerIsAlreadySubscribed, setIsUserAdmin } = useGlobalStore();
 
   const { id } = useParams();
+  const navigate = useNavigate();
 
   const getFivePlayersFetch = useSupabase<FivePlayerResponse[]>(
     () =>
@@ -48,6 +50,11 @@ export default function PlayersList() {
         .order("id", { ascending: false })
         .single(),
     true
+  );
+
+  const deleteFiveFetch = useSupabase<Players>(
+    () => supabase.from("fives").delete().eq("id", five?.id),
+    false
   );
 
   const deletePlayerFetch = useSupabase<Players>(
@@ -106,6 +113,14 @@ export default function PlayersList() {
     });
   };
 
+  const handleFiveDelete = () => {
+    deleteFiveFetch.executeFetch().then(() => {
+      getFivesFetch.executeFetch();
+      closeModal(Modals.REMOVE_FIVE_MODAL);
+      navigate("/");
+    });
+  };
+
   if (getFivePlayersFetch.loading || getFivesFetch.loading) {
     return <Spinner />;
   }
@@ -114,7 +129,11 @@ export default function PlayersList() {
     five &&
     playerInfo && (
       <div className="flex flex-col w-full">
-        <ConfirmModal onConfirm={handleUnsuscribeConfirmation} />
+        <ConfirmModal
+          onConfirm={handleUnsuscribeConfirmation}
+          title="Désinscription"
+          modalId={Modals.CONFIRM_MODAL}
+        />
 
         <SubscribeModal
           onConfirm={handleSubscribeModalConfirmation}
@@ -122,30 +141,43 @@ export default function PlayersList() {
           playerInfo={playerInfo}
         />
 
-        <div className="flex flex-col w-full gap-5">
-          <FiveInformation
-            date={five.date}
-            place={five.place}
-            placeUrl={five.placeUrl}
-          />
+        <EditFiveModal
+          five={five}
+          onConfirm={() => getFivesFetch.executeFetch()}
+        />
 
-          <List
-            withSubscriptionButton={true}
-            players={titulars}
-            onDeleteUser={() => {
-              getFivePlayersFetch.executeFetch();
-              getFivesFetch.executeFetch();
-            }}
-          />
+        <ConfirmModal
+          onConfirm={handleFiveDelete}
+          title={"Êtes-vous sûre de la suppression du five ?"}
+          modalId={Modals.REMOVE_FIVE_MODAL}
+        />
 
-          <List
-            isSubstitutePlayers
-            players={substitutes}
-            onDeleteUser={() => {
-              getFivePlayersFetch.executeFetch();
-              getFivesFetch.executeFetch();
-            }}
-          />
+        <div className="flex flex-col w-full">
+          <div className="mb-2">
+            <FiveInformation playerInfo={playerInfo} five={five} />
+          </div>
+
+          <div className="mb-10">
+            <List
+              withSubscriptionButton={true}
+              players={titulars}
+              onDeleteUser={() => {
+                getFivePlayersFetch.executeFetch();
+                getFivesFetch.executeFetch();
+              }}
+            />
+          </div>
+
+          <div className="pb-5">
+            <List
+              isSubstitutePlayers
+              players={substitutes}
+              onDeleteUser={() => {
+                getFivePlayersFetch.executeFetch();
+                getFivesFetch.executeFetch();
+              }}
+            />
+          </div>
         </div>
       </div>
     )

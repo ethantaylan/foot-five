@@ -1,12 +1,17 @@
 import { FivePlayerResponse } from "./FivePlayer";
 import { Players } from "./Player";
 
+export interface Organizer {
+  username: string;
+  id: string;
+}
+
 export interface FiveResponse {
   id: number;
   date: string;
   place: string;
   place_url: string;
-  organizer: string;
+  organizer: Organizer;
   five_players: FivePlayerResponse[];
   duration: string;
 }
@@ -16,7 +21,7 @@ export class Five {
   date: string;
   place: string;
   placeUrl: string;
-  organizer: string;
+  organizer: Organizer;
   players: Players[];
   duration: string;
 
