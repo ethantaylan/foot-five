@@ -1,13 +1,12 @@
-import { ChangeEvent, FC, useEffect, useState } from "react";
+import { ChangeEvent, FC, useState } from "react";
 import { supabase } from "../../supabase";
-import { useUser } from "@clerk/clerk-react";
-import { Players, PlayersResponse } from "../../models/Player";
 import { Modals } from "../../constants/Modals";
 import { FiveResponse } from "../../models/Five";
 import { FivePlaces } from "../../constants/FivePlaces";
 import { HiddenCloseModalButton } from "../HiddenCloseModalButton/HiddenCloseModalButton";
 import { closeModal } from "../../utils/CloseModal";
 import { useSupabase } from "../../hooks/useSupabase";
+import { useGlobalStore } from "../../context";
 
 export interface NewFiveModalProps {
   onConfirm: () => void;
@@ -18,9 +17,8 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
   const [fivePlace, setFivePlace] = useState<string>("");
   const [fiveOtherPlace, setFiveOtherPlace] = useState<string>("");
   const [fiveDuration, setFiveDuration] = useState<string>("0");
-  const [player, setPlayer] = useState<Players>();
 
-  const { user } = useUser();
+  const { playerInfo } = useGlobalStore();
 
   const handlePlaceUrl = () => {
     switch (fivePlace) {
@@ -34,16 +32,6 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
         return "";
     }
   };
-
-  const playerInfoFetch = useSupabase<PlayersResponse>(
-    () => supabase.from("players").select().eq("user_id", user?.id).single(),
-    true
-  );
-
-  useEffect(() => {
-    playerInfoFetch.response &&
-      setPlayer(new Players(playerInfoFetch.response));
-  }, [playerInfoFetch.response]);
 
   const handleIsFiveValid = () => {
     const selectedDate = new Date(fiveDate);
@@ -64,7 +52,10 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
             date: fiveDate,
             place: fivePlace === FivePlaces.AUTRE ? fiveOtherPlace : fivePlace,
             place_url: handlePlaceUrl(),
-            organizer: { username: player?.userName, id: player?.userId },
+            organizer: {
+              username: playerInfo?.userName,
+              id: playerInfo?.userId,
+            },
             duration: fiveDuration,
           },
         ])
