@@ -6,6 +6,8 @@ import { showModal } from "../../utils/ShowModal";
 import { Modals } from "../../constants/Modals";
 import { Five } from "../../models/Five";
 import { Players } from "../../models/Player";
+import { ShareIcon } from "@heroicons/react/16/solid";
+import { WhatsappShareButton } from "react-share";
 
 export interface FiveInformationProps {
   five: Five;
@@ -17,8 +19,13 @@ export const FiveInformation: FC<FiveInformationProps> = ({
   five,
 }) => {
   return (
-    <div className="flex flex-col">
-      <h2 className="font-bold">{formatDate(five.date)}</h2>
+    <div className="flex mb-2 flex-col">
+      <div className="flex items-center">
+        <h2 className="font-bold">{formatDate(five.date)}</h2>
+        <WhatsappShareButton url={window.location.href}>
+          <ShareIcon className="w-5 ms-2 cursor-pointer hover:text-neutral-600" />
+        </WhatsappShareButton>
+      </div>
 
       <h3 className="text-secondary flex text-sm">
         {five.place}
@@ -31,8 +38,8 @@ export const FiveInformation: FC<FiveInformationProps> = ({
       </h3>
       <div className="flex items-center gap-2">
         <h3 className="text-secondary text-sm">
-          Organisé par:{" "}
-          <span className="font-semibold">{five.organizer.username}</span>
+          Organisé par:
+          <span className="ms-1 font-semibold">{five.organizer.username}</span>
         </h3>
         <h3 className="text-secondary text-sm">
           Durée: <span className="font-semibold">{five.duration}</span>

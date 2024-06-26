@@ -13,6 +13,7 @@ export interface ListProps {
   isSubstitutePlayers?: boolean;
   withSubscriptionButton?: boolean;
   onDeleteUser: () => void;
+  canSubscribe?: boolean
 }
 
 export const List: FC<ListProps> = ({
@@ -20,6 +21,7 @@ export const List: FC<ListProps> = ({
   isSubstitutePlayers,
   withSubscriptionButton,
   onDeleteUser,
+  canSubscribe = true,
 }) => {
   const { isUserAlreadySubscribed, isUserAdmin } = useGlobalStore();
 
@@ -46,7 +48,7 @@ export const List: FC<ListProps> = ({
 
   return (
     <>
-      <div className="flex justify-between mb-2 items-end">
+      <div className="flex justify-between items-end">
         <div className="flex flex-col">
           <span className="text-sm font-bold text-primary">
             {isSubstitutePlayers ? "Remplaçants" : "Joueurs"} ({players?.length}
@@ -54,13 +56,17 @@ export const List: FC<ListProps> = ({
           </span>
 
           <span className="text-sm mt-1">
-            {players?.length === 0 && `Pas de ${isSubstitutePlayers ? 'remplaçants' : 'joueurs'} inscrits`}
+            {players?.length === 0 &&
+              `Pas de ${
+                isSubstitutePlayers ? "remplaçants" : "joueurs"
+              } inscrits`}
           </span>
         </div>
 
         <div className="flex gap-2">
           {withSubscriptionButton && (
             <button
+              disabled={canSubscribe}
               onClick={() =>
                 isUserAlreadySubscribed
                   ? showModal(Modals.CONFIRM_MODAL)
@@ -75,7 +81,7 @@ export const List: FC<ListProps> = ({
       </div>
 
       {players && (
-        <ul className="flex flex-col gap-2 p-0">
+        <ul className="flex flex-col mb-5 mt-2 gap-2 p-0">
           {players.map((player, index) => (
             <li
               key={player.userId}

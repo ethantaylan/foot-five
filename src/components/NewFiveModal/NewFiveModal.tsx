@@ -113,13 +113,14 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
             Lieu
           </label>
           <select
+            value='no-selected'
             name="set-five-place"
             onChange={(event: ChangeEvent<HTMLSelectElement>) =>
               setFivePlace(event.target.value)
             }
             className="select select-sm select-bordered w-full"
           >
-            <option disabled selected defaultValue="Selectionner le lieu">
+            <option value='no-selected' disabled>
               Selectionner le lieu
             </option>
 

@@ -125,6 +125,16 @@ export default function PlayersList() {
     return <Spinner />;
   }
 
+  const handleCanSubscribe = () => {
+    const date = new Date();
+    const fiveDate = new Date(five?.date || "");
+
+    if (fiveDate < date) {
+      return true;
+    }
+    return false;
+  };
+
   return (
     five &&
     playerInfo && (
@@ -148,17 +158,15 @@ export default function PlayersList() {
 
         <ConfirmModal
           onConfirm={handleFiveDelete}
-          title={"Êtes-vous sûre de la suppression du five ?"}
+          title="Êtes-vous sûre de la suppression du five ?"
           modalId={Modals.REMOVE_FIVE_MODAL}
         />
 
         <div className="flex flex-col w-full">
-          <div className="mb-2">
-            <FiveInformation playerInfo={playerInfo} five={five} />
-          </div>
-
-          <div className="mb-10">
+          <FiveInformation playerInfo={playerInfo} five={five} />
+          <div className="flex flex-col gap-5">
             <List
+              canSubscribe={handleCanSubscribe()}
               withSubscriptionButton={true}
               players={titulars}
               onDeleteUser={() => {
@@ -166,9 +174,7 @@ export default function PlayersList() {
                 getFivesFetch.executeFetch();
               }}
             />
-          </div>
 
-          <div className="pb-5">
             <List
               isSubstitutePlayers
               players={substitutes}
