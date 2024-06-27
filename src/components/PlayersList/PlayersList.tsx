@@ -164,7 +164,7 @@ export default function PlayersList() {
 
         <div className="flex flex-col w-full">
           <FiveInformation playerInfo={playerInfo} five={five} />
-          <div className="flex flex-col gap-5">
+          <div className="flex flex-col">
             <List
               canSubscribe={handleCanSubscribe()}
               withSubscriptionButton={true}
