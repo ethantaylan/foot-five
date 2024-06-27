@@ -61,8 +61,14 @@ export default function App() {
             path="/fives/:id"
             element={
               <div className="flex max-w-2xl min-h-[420px] h-fit shadow-2xl backdrop-blur-md rounded-xl p-7 bg-white/70 w-full flex-col">
-                <Header />
-                <PlayersList />
+                <SignedOut>
+                  <RedirectToSignIn />
+                </SignedOut>
+
+                <SignedIn>
+                  <Header />
+                  <PlayersList />
+                </SignedIn>
               </div>
             }
           />
