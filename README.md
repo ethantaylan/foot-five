@@ -42,7 +42,7 @@ Five is a web application designed to streamline the organization of five-a-side
    Create a `.env` file in the root directory and add the following:
    ```env
    VITE_CLERK_PUBLISHABLE_KEY=<your_clerk_publishable_key>
-   VITE_SUPABASE_URLL=<your_supabase_url>
+   VITE_SUPABASE_URL=<your_supabase_url>
    VITE_SUPABASE_KEY=<your_supabase_anon_key>
    ```
 
