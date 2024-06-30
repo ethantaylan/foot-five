@@ -99,7 +99,6 @@ export default function PlayersList() {
 
   const handleSubscribeModalConfirmation = () => {
     getFivePlayersFetch.executeFetch().then(() => {
-      getFivePlayersFetch.executeFetch();
       getFivesFetch.executeFetch();
       playerInfoFetch.executeFetch();
     });

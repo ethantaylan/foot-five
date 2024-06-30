@@ -33,7 +33,7 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
     }
   };
 
-  const handleIsFiveValid = () => {
+  const handleIsFiveDateValid = () => {
     const selectedDate = new Date(fiveDate);
     const now = new Date();
 
@@ -83,7 +83,7 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
             className="input input-bordered input-sm w-full"
             type="datetime-local"
           />
-          {handleIsFiveValid() && (
+          {handleIsFiveDateValid() && (
             <p className="text-red-500">La date sélectionnée est passée.</p>
           )}
         </div>
@@ -113,14 +113,14 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
             Lieu
           </label>
           <select
-            value='no-selected'
+            value="no-selected"
             name="set-five-place"
             onChange={(event: ChangeEvent<HTMLSelectElement>) =>
               setFivePlace(event.target.value)
             }
             className="select select-sm select-bordered w-full"
           >
-            <option value='no-selected' disabled>
+            <option value="no-selected" disabled>
               Selectionner le lieu
             </option>
 
@@ -148,7 +148,7 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
               fivePlace.length === 0 ||
               fiveDuration === "0" ||
               (fivePlace === FivePlaces.AUTRE && fiveOtherPlace.length === 0) ||
-              handleIsFiveValid()
+              handleIsFiveDateValid()
             }
             onClick={() =>
               addNewFiveFetch.executeFetch().then(() => {

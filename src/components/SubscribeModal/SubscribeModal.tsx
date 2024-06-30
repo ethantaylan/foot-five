@@ -9,6 +9,8 @@ import { Five } from "../../models/Five";
 import { Modals } from "../../constants/Modals";
 import { HiddenCloseModalButton } from "../HiddenCloseModalButton/HiddenCloseModalButton";
 import { closeModal } from "../../utils/CloseModal";
+import { formatDate } from "../../utils/FormatDate";
+import axios from "axios";
 
 export interface SubscribeModalProps {
   onConfirm: () => void;
@@ -38,6 +40,91 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
     false
   );
 
+  const subscribePlayerToFiveFetch = useSupabase<Players>(
+    () =>
+      supabase.from("five_players").insert({
+        five_id: five.id,
+        player_id: user?.id,
+        is_substitute: isSubstitute,
+        player_name: userName,
+      }),
+    false
+  );
+
+  const updateUsernameFetch = useSupabase<Players>(
+    () =>
+      supabase
+        .from("players")
+        .update({
+          user_name: userName,
+        })
+        .eq("user_id", user?.id),
+    false
+  );
+
+  function generatePlayerList(
+    players: Players[],
+    includePlayerInfo = false,
+    isSubstitute = false
+  ) {
+    let list = (players || [])
+      .map((p, index) => `${index + 1} ${p.userName} \n`)
+      .join("");
+    if (includePlayerInfo && !isSubstitute) {
+      list += `${players.length + 1} ${playerInfo.userName}\n`;
+    }
+    return list;
+  }
+
+  function generateSubstituteList(
+    subs: Players[],
+    includePlayerInfo = false,
+    isSubstitute = false
+  ) {
+    let list = (subs || [])
+      .map((p, index) => `${index + 1} ${p.userName} \n`)
+      .join("");
+    if (includePlayerInfo && isSubstitute) {
+      list += `${subs.length + 1} ${playerInfo.userName}\n`;
+    }
+    return list;
+  }
+
+  const subs = five.players.filter((p) => p.isSubstitute === true);
+  const nonSubs = five.players.filter((p) => !p.isSubstitute);
+
+  const subscribedPlayers = generatePlayerList(
+    nonSubs,
+    !isSubstitute,
+    isSubstitute
+  );
+  const subscribedSubstitutePlayers = generateSubstituteList(
+    subs,
+    isSubstitute,
+    isSubstitute
+  );
+
+  const message = `⚽FIVE du ${formatDate(five?.date || "")} \n \n *${
+    playerInfo?.userName
+  }* s'est inscrit :) \n \n Joueurs: \n ${
+    subscribedPlayers.length === 0 ? "_Pas de joueurs_" : subscribedPlayers
+  } \n \n Remplaçants: \n ${
+    subscribedSubstitutePlayers.length === 0
+      ? "_Pas de remplaçants_"
+      : subscribedSubstitutePlayers
+  }  \n ${window.location.href}`.replaceAll(",", " ");
+
+  const handleSendMessage = async () => {
+    axios.post(
+      "https://academic-wendy-ethantaylan-3cf3d20b.koyeb.app/send-message",
+      {
+        message: message,
+        // group: "120363312585357097@g.us",
+        group: "33766704190-1624712064@g.us",
+      }
+    );
+  };
+
   const handleConfirm = async () => {
     if (!playerInfo) {
       await subscribePlayerFetch.executeFetch();
@@ -47,24 +134,15 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
       (player) => player.userId === playerInfo.userId
     );
 
-    !isPlayerAlreadySubscribed &&
-      (await supabase.from("five_players").insert({
-        five_id: five.id,
-        player_id: user?.id,
-        is_substitute: isSubstitute,
-        player_name: userName,
-      }));
+    if (!isPlayerAlreadySubscribed) {
+      updateUsernameFetch.executeFetch();
+      subscribePlayerToFiveFetch.executeFetch().then(() => {
+        handleSendMessage();
+      });
 
-    !isPlayerAlreadySubscribed &&
-      (await supabase
-        .from("players")
-        .update({
-          user_name: userName,
-        })
-        .eq("user_id", user?.id));
-
-    onConfirm();
-    closeModal(Modals.SUBSCRIBE_MODAL);
+      onConfirm();
+      closeModal(Modals.SUBSCRIBE_MODAL);
+    }
   };
 
   return (
