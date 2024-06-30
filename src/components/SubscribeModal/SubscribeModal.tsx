@@ -9,6 +9,8 @@ import { Five } from "../../models/Five";
 import { Modals } from "../../constants/Modals";
 import { HiddenCloseModalButton } from "../HiddenCloseModalButton/HiddenCloseModalButton";
 import { closeModal } from "../../utils/CloseModal";
+import { formatDate } from "../../utils/FormatDate";
+import axios from "axios";
 
 export interface SubscribeModalProps {
   onConfirm: () => void;
@@ -38,6 +40,26 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
     false
   );
 
+  const subscribedPlayers = `${five?.players.map(
+    (p, index) => `${index + 1} ${p.userName} \n`
+  )} ${five.players.length + 1} ${playerInfo.userName}`;
+
+  const message = `⚽FIVE du ${formatDate(five?.date || "")} \n \n *${
+    playerInfo?.userName
+  }* s'est inscrit :) \n \n Joueurs: \n ${subscribedPlayers} \n \n ${
+    window.location.href
+  }`.replaceAll(",", " ");
+
+  const handleSendMessage = async () => {
+    axios.post(
+      "https://academic-wendy-ethantaylan-3cf3d20b.koyeb.app/send-message",
+      {
+        message: message,
+        group: "120363312585357097@g.us",
+      }
+    );
+  };
+
   const handleConfirm = async () => {
     if (!playerInfo) {
       await subscribePlayerFetch.executeFetch();
@@ -48,12 +70,18 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
     );
 
     !isPlayerAlreadySubscribed &&
-      (await supabase.from("five_players").insert({
-        five_id: five.id,
-        player_id: user?.id,
-        is_substitute: isSubstitute,
-        player_name: userName,
-      }));
+      (await supabase
+        .from("five_players")
+        .insert({
+          five_id: five.id,
+          player_id: user?.id,
+          is_substitute: isSubstitute,
+          player_name: userName,
+        })
+        .then(() => {
+          handleSendMessage();
+          console.log(message)
+        }));
 
     !isPlayerAlreadySubscribed &&
       (await supabase

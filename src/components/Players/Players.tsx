@@ -13,7 +13,7 @@ export interface ListProps {
   isSubstitutePlayers?: boolean;
   withSubscriptionButton?: boolean;
   onDeleteUser: () => void;
-  canSubscribe?: boolean
+  canSubscribe?: boolean;
 }
 
 export const List: FC<ListProps> = ({
