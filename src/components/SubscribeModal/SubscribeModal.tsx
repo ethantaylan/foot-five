@@ -104,23 +104,25 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
     isSubstitute
   );
 
-  const message = `⚽FIVE du ${formatDate(five?.date || "")} \n \n *${
+  const message = `⚽FIVE du ${formatDate(five?.date || "")}\n\n*${
     playerInfo?.userName
-  }* s'est inscrit :) \n \n Joueurs: \n ${
+  }* s'est inscrit 🙂 \n\nJoueurs:\n${
     subscribedPlayers.length === 0 ? "_Pas de joueurs_" : subscribedPlayers
-  } \n \n Remplaçants: \n ${
+  }\n\nRemplaçants: \n${
     subscribedSubstitutePlayers.length === 0
       ? "_Pas de remplaçants_"
       : subscribedSubstitutePlayers
-  }  \n ${window.location.href}`.replaceAll(",", " ");
+  }\n\n${window.location.href}`.replaceAll(",", " ");
+
+  console.log(message);
 
   const handleSendMessage = async () => {
     axios.post(
       "https://academic-wendy-ethantaylan-3cf3d20b.koyeb.app/send-message",
       {
         message: message,
-        // group: "120363312585357097@g.us",
-        group: "33766704190-1624712064@g.us",
+        group: "120363312585357097@g.us",
+        // group: "33766704190-1624712064@g.us",
       }
     );
   };
