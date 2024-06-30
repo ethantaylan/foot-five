@@ -114,7 +114,7 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
       : subscribedSubstitutePlayers
   }\n\n${window.location.href}`.replaceAll(",", " ");
 
-  const handleSendMessage = async () => {
+  const handleSendNewPlayerMessage = async () => {
     axios.post(
       "https://academic-wendy-ethantaylan-3cf3d20b.koyeb.app/send-message",
       {
@@ -136,7 +136,7 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
     if (!isPlayerAlreadySubscribed) {
       updateUsernameFetch.executeFetch();
       subscribePlayerToFiveFetch.executeFetch().then(() => {
-        handleSendMessage();
+        handleSendNewPlayerMessage();
       });
 
       onConfirm();

@@ -1,9 +1,9 @@
 import { FC } from "react";
 
-export const HiddenCloseModalButton: FC = () => {
+export const HiddenCloseModalButton: FC<{ label?: string }> = ({ label }) => {
   return (
-    <form method="dialog" className="modal-backdrop">
-      <button>close</button>
+    <form method="dialog">
+      <button className="btn btn-sm btn-ghost">{label}</button>
     </form>
   );
 };

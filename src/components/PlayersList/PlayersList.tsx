@@ -142,6 +142,8 @@ export default function PlayersList() {
           onConfirm={handleUnsuscribeConfirmation}
           title="Désinscription"
           modalId={Modals.CONFIRM_MODAL}
+          label={""}
+          five={five}
         />
 
         <SubscribeModal
