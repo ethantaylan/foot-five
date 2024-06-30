@@ -113,14 +113,13 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
       ? "_Pas de remplaçants_"
       : subscribedSubstitutePlayers
   }\n\n${window.location.href}`.replaceAll(",", " ");
-  
+
   const handleSendMessage = async () => {
     axios.post(
       "https://academic-wendy-ethantaylan-3cf3d20b.koyeb.app/send-message",
       {
         message: message,
-        group: "120363312585357097@g.us",
-        // group: "33766704190-1624712064@g.us",
+        group: "120363181297536515@g.us",
       }
     );
   };
