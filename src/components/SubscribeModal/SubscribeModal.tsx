@@ -113,9 +113,7 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
       ? "_Pas de remplaçants_"
       : subscribedSubstitutePlayers
   }\n\n${window.location.href}`.replaceAll(",", " ");
-
-  console.log(message);
-
+  
   const handleSendMessage = async () => {
     axios.post(
       "https://academic-wendy-ethantaylan-3cf3d20b.koyeb.app/send-message",
