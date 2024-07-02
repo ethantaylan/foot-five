@@ -9,7 +9,7 @@ export interface UnSubscribeModalProps {
   onConfirm: () => void;
   title: string;
   modalId: string;
-  label: string;
+  label?: string;
   five: Five;
 }
 

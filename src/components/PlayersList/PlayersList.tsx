@@ -15,6 +15,7 @@ import { useSupabase } from "../../hooks/useSupabase";
 import { useGlobalStore } from "../../context";
 import { EditFiveModal } from "../EditFiveModal/EditFiveModal";
 import { UnSubscribeModal } from "../UnSubscribeModal/UnSubscribeModal";
+import { DeleteFiveModal } from "../DeleteFiveModal/DeleteFiveModal";
 
 export default function PlayersList() {
   const { user } = useUser();
@@ -142,7 +143,6 @@ export default function PlayersList() {
           onConfirm={handleUnsuscribeConfirmation}
           title="Désinscription"
           modalId={Modals.CONFIRM_MODAL}
-          label={""}
           five={five}
         />
 
@@ -156,15 +156,12 @@ export default function PlayersList() {
           five={five}
           onConfirm={() => getFivesFetch.executeFetch()}
         />
-        {/* 
-        <ConfirmModal
-          onConfirm={handleFiveDelete}
-          title="Êtes-vous sûre de la suppression du five ?"
-          modalId={Modals.REMOVE_FIVE_MODAL}
-        /> */}
+
+        <DeleteFiveModal onConfirm={handleFiveDelete} />
 
         <div className="flex flex-col w-full">
           <FiveInformation playerInfo={playerInfo} five={five} />
+
           <div className="flex flex-col">
             <List
               canSubscribe={handleCanSubscribe()}

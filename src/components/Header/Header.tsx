@@ -3,7 +3,7 @@ import Profil from "../Profil/Profil";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-export default function Header() {
+export const Header = () => {
   const { pathname } = useLocation();
   const [date, setDate] = useState<string>("");
   const navigate = useNavigate();
@@ -43,14 +43,15 @@ export default function Header() {
       )}
       <div className="flex justify-between w-full">
         <button className="font-black text-xl">FIVE ⚽</button>
+
         <div className="flex items-center">
           <div
             dangerouslySetInnerHTML={{ __html: date }}
             className="text-xs me-2 badge bg-opacity-65 rounded border shadow-md"
-          ></div>
+          />
           <Profil />
         </div>
       </div>
     </div>
   );
-}
+};
