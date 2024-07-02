@@ -22,7 +22,7 @@ export const FiveList = () => {
       supabase
         .from("fives")
         .select("*, five_players (is_substitute, player:player_id (*))")
-        .order("id", { ascending: false })
+        .order("created_at", { ascending: false })
         .limit(4),
     true
   );

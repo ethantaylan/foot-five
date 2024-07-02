@@ -1,7 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import { Players, PlayersResponse } from "../../models/Player";
-import { ConfirmModal } from "../ConfirmModal/ConfirmModal";
 import { List } from "../Players/Players";
 import { SubscribeModal } from "../SubscribeModal/SubscribeModal";
 import { FivePlayerResponse } from "../../models/FivePlayer";
@@ -15,6 +14,7 @@ import { Modals } from "../../constants/Modals";
 import { useSupabase } from "../../hooks/useSupabase";
 import { useGlobalStore } from "../../context";
 import { EditFiveModal } from "../EditFiveModal/EditFiveModal";
+import { UnSubscribeModal } from "../UnSubscribeModal/UnSubscribeModal";
 
 export default function PlayersList() {
   const { user } = useUser();
@@ -138,7 +138,7 @@ export default function PlayersList() {
     five &&
     playerInfo && (
       <div className="flex flex-col w-full">
-        <ConfirmModal
+        <UnSubscribeModal
           onConfirm={handleUnsuscribeConfirmation}
           title="Désinscription"
           modalId={Modals.CONFIRM_MODAL}
@@ -156,12 +156,12 @@ export default function PlayersList() {
           five={five}
           onConfirm={() => getFivesFetch.executeFetch()}
         />
-
+        {/* 
         <ConfirmModal
           onConfirm={handleFiveDelete}
           title="Êtes-vous sûre de la suppression du five ?"
           modalId={Modals.REMOVE_FIVE_MODAL}
-        />
+        /> */}
 
         <div className="flex flex-col w-full">
           <FiveInformation playerInfo={playerInfo} five={five} />

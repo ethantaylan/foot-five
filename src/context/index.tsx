@@ -9,6 +9,7 @@ interface GlobalState {
   five: Five | null;
   playerInfo: Players | null;
   organizer: Organizer | null;
+  isDevEnv: boolean | null;
 }
 
 interface GlobalActions {
@@ -18,6 +19,7 @@ interface GlobalActions {
   setPlayers: (players: Players[]) => void;
   setPlayerIsAlreadySubscribed: (isSubscribed: boolean | null) => void;
   setOrganizer: (organizer: Organizer | null) => void;
+  setIsDevEnv: (env: boolean | null) => void;
 }
 
 type GlobalStore = GlobalState & GlobalActions;
@@ -30,6 +32,7 @@ export const useGlobalStore = create<GlobalStore>(
     five: null,
     playerInfo: null,
     organizer: null,
+    isDevEnv: null,
 
     setOrganizer: (organizer) => set((state) => ({ ...state, organizer })),
     setIsUserAdmin: (isAdmin) =>
@@ -39,5 +42,7 @@ export const useGlobalStore = create<GlobalStore>(
     setPlayers: (players) => set((state) => ({ ...state, players })),
     setPlayerIsAlreadySubscribed: (isSubscribed) =>
       set((state) => ({ ...state, isUserAlreadySubscribed: isSubscribed })),
+    
+    setIsDevEnv: (env) => set((state) => ({ ...state, isDevEnv: env })),
   })
 );
