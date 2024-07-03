@@ -1,13 +1,12 @@
 import { useUser } from "@clerk/clerk-react";
 import { startCase } from "lodash";
-import { ChangeEvent, useState } from "react";
+import { ChangeEvent, useEffect, useState } from "react";
 import { useSupabase } from "../../../hooks/UseSupabase";
 import { Players, PlayersResponse } from "../../../models/Player";
 import { supabase } from "../../../supabase";
 import { Switch } from "../../Switch/Switch";
 import { Modals } from "../../../constants/Modals";
 import { closeModal } from "../../../utils/CloseModal";
-import { formatDate } from "../../../utils/FormatDate";
 import { useGlobalStore } from "../../../store/GlobalStore";
 import axios from "axios";
 import { Modal } from "../../Modal/Modal";
@@ -59,38 +58,7 @@ export default function SubscribeModal({ onConfirm }: SubscribeModalProps) {
     false
   );
 
-  const generateList = (players: Players[], includePlayerInfo = false) =>
-    players.map((p, index) => `${index + 1} ${p.userName} \n`).join("") +
-    (includePlayerInfo
-      ? `${players.length + 1} ${playerInfo?.userName}\n`
-      : "");
-
-  const subscribedPlayers = generateList(
-    (five?.players || []).filter((p) => !p.isSubstitute),
-    !isSubstitute
-  );
-  const subscribedSubstitutePlayers = generateList(
-    (five?.players || []).filter((p) => p.isSubstitute),
-    isSubstitute
-  );
-
-  const message = `⚽FIVE du ${formatDate(five?.date || "")}\n\n*${
-    playerInfo?.userName
-  }* s'est inscrit 🙂 \n\nJoueurs:\n${
-    subscribedPlayers || "_Pas de joueurs_"
-  }\n\nRemplaçants: \n${
-    subscribedSubstitutePlayers || "_Pas de remplaçants_"
-  }\n\n${window.location.href}`.replaceAll(",", " ");
-
-  const handleSendNewPlayerMessage = async () => {
-    await axios.post(
-      "https://academic-wendy-ethantaylan-3cf3d20b.koyeb.app/send-message",
-      {
-        message,
-        group: isDevEnv ? "120363312585357097@g.us" : "120363181297536515@g.us",
-      }
-    );
-  };
+  const message = `${five?.players.map((p) => p.userName)}`;
 
   const handleConfirm = async () => {
     if (!playerInfo) {
@@ -104,7 +72,6 @@ export default function SubscribeModal({ onConfirm }: SubscribeModalProps) {
     if (!isPlayerAlreadySubscribed) {
       await updateUsernameFetch.executeFetch();
       await subscribePlayerToFiveFetch.executeFetch();
-      await handleSendNewPlayerMessage();
       onConfirm();
       closeModal(Modals.SUBSCRIBE_MODAL);
     }

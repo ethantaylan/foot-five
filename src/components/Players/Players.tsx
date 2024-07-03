@@ -6,7 +6,8 @@ import { useSupabase } from "../../hooks/UseSupabase";
 import { supabase } from "../../supabase";
 import { useParams } from "react-router-dom";
 import { Modals } from "../../constants/Modals";
-import { useGlobalStore } from "../../store/GlobalStore";
+import { usePlayerInfoStore } from "../../store/PlayerInfo";
+import { useAdminStore } from "../../store/Admin";
 
 export interface ListProps {
   players: Players[] | undefined;
@@ -23,10 +24,10 @@ export const List: FC<ListProps> = ({
   onDeleteUser,
   canSubscribe = true,
 }) => {
-  const { isUserAlreadySubscribed, isUserAdmin } = useGlobalStore();
-
   const { id } = useParams();
+  const { isUserAlreadySubscribed } = usePlayerInfoStore();
   const [playerId, setPlayerId] = useState<string>("");
+  const { isUserAdmin } = useAdminStore();
 
   const deletePlayerFetch = useSupabase<Players>(
     () =>
@@ -69,7 +70,7 @@ export const List: FC<ListProps> = ({
               disabled={canSubscribe}
               onClick={() =>
                 isUserAlreadySubscribed
-                  ? showModal(Modals.CONFIRM_MODAL)
+                  ? showModal(Modals.UNSUBSCRIBE_MODAL)
                   : showModal(Modals.SUBSCRIBE_MODAL)
               }
               className="btn btn-sm btn-primary rounded"

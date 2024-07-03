@@ -29,6 +29,7 @@ export const Five: FC<FivesProps> = ({ fives, onRemoveFive }) => {
 
           return (
             <div
+              onClick={() => navigate(`/fives/${f.id}`)}
               key={f.id}
               className={`w-full cursor-pointer border-l-4 ${
                 isPastFive ? "border-red-500" : "border-green-500"
@@ -52,13 +53,7 @@ export const Five: FC<FivesProps> = ({ fives, onRemoveFive }) => {
                 )}
               </div>
 
-              <div
-                onClick={() => {
-                  navigate(`/fives/${f.id}`);
-                  setFive(f);
-                }}
-                className="flex flex-col"
-              >
+              <div onClick={() => setFive(f)} className="flex flex-col">
                 <span className="text-secondary text-sm">
                   {f.place.replace("Autre", "Lieu non précisé")}
                 </span>
