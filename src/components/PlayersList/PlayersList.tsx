@@ -2,23 +2,25 @@ import { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import { Players, PlayersResponse } from "../../models/Player";
 import { List } from "../Players/Players";
-import SubscribeModal from "../SubscribeModal/SubscribeModal";
 import { FivePlayerResponse } from "../../models/FivePlayer";
 import { Five, FiveResponse } from "../../models/Five";
 import { useParams } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { Spinner } from "../Spinner/Spinner";
 import { FiveInformation } from "../FiveInformation/FiveInformation";
-import { useSupabase } from "../../hooks/useSupabase";
-import { useGlobalStore } from "../../context";
-import { EditFiveModal } from "../EditFiveModal/EditFiveModal";
-import { UnSubscribeModal } from "../UnSubscribeModal/UnSubscribeModal";
-import { DeleteFiveModal } from "../DeleteFiveModal/DeleteFiveModal";
+import { useSupabase } from "../../hooks/UseSupabase";
+import SubscribeModal from "../Modals/SubscribeModal/SubscribeModal";
+import { EditFiveModal } from "../Modals/EditFiveModal/EditFiveModal";
+import { DeleteFiveModal } from "../Modals/DeleteFiveModal/DeleteFiveModal";
+import { UnSubscribeModal } from "../Modals/UnSubscribeModal/UnSubscribeModal";
+import { usePlayerInfoStore } from "../../store/PlayerInfo";
+import { useAdminStore } from "../../store/Admin";
 
 export default function PlayersList() {
   const { user } = useUser();
   const { id } = useParams();
-  const { setPlayerIsAlreadySubscribed, setIsUserAdmin } = useGlobalStore();
+  const { setIsUserAdmin } = useAdminStore();
+  const { setIsUserAlreadySubscribed } = usePlayerInfoStore();
 
   const [five, setFive] = useState<Five>();
   const [titulars, setTitulars] = useState<Players[]>([]);
@@ -68,7 +70,7 @@ export default function PlayersList() {
 
   useEffect(() => {
     if (playerInfo && five) {
-      setPlayerIsAlreadySubscribed(
+      setIsUserAlreadySubscribed(
         five.players.some(
           (player) => player?.userId === (playerInfo?.userId ?? "")
         )

@@ -1,16 +1,18 @@
 import { useUser } from "@clerk/clerk-react";
 import { startCase } from "lodash";
 import { ChangeEvent, useState } from "react";
-import { useSupabase } from "../../hooks/useSupabase";
-import { Players, PlayersResponse } from "../../models/Player";
-import { supabase } from "../../supabase";
-import { Switch } from "../Switch/Switch";
-import { Modals } from "../../constants/Modals";
-import { closeModal } from "../../utils/CloseModal";
-import { formatDate } from "../../utils/FormatDate";
-import { useGlobalStore } from "../../context";
+import { useSupabase } from "../../../hooks/UseSupabase";
+import { Players, PlayersResponse } from "../../../models/Player";
+import { supabase } from "../../../supabase";
+import { Switch } from "../../Switch/Switch";
+import { Modals } from "../../../constants/Modals";
+import { closeModal } from "../../../utils/CloseModal";
+import { formatDate } from "../../../utils/FormatDate";
+import { useGlobalStore } from "../../../store/GlobalStore";
 import axios from "axios";
-import { Modal } from "../Modal/Modal";
+import { Modal } from "../../Modal/Modal";
+import { useFiveStore } from "../../../store/Five";
+import { usePlayerInfoStore } from "../../../store/PlayerInfo";
 
 interface SubscribeModalProps {
   onConfirm: () => void;
@@ -18,7 +20,9 @@ interface SubscribeModalProps {
 
 export default function SubscribeModal({ onConfirm }: SubscribeModalProps) {
   const { user } = useUser();
-  const { isDevEnv, five, playerInfo } = useGlobalStore();
+  const { isDevEnv } = useGlobalStore();
+  const { five } = useFiveStore();
+  const { playerInfo } = usePlayerInfoStore();
   const [isSubstitute, setIsSubstitute] = useState<boolean>(false);
   const [userName, setUserName] = useState<string>(playerInfo?.userName ?? "");
 
@@ -57,7 +61,9 @@ export default function SubscribeModal({ onConfirm }: SubscribeModalProps) {
 
   const generateList = (players: Players[], includePlayerInfo = false) =>
     players.map((p, index) => `${index + 1} ${p.userName} \n`).join("") +
-    (includePlayerInfo ? `${players.length + 1} ${playerInfo?.userName}\n` : "");
+    (includePlayerInfo
+      ? `${players.length + 1} ${playerInfo?.userName}\n`
+      : "");
 
   const subscribedPlayers = generateList(
     (five?.players || []).filter((p) => !p.isSubstitute),

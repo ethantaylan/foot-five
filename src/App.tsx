@@ -11,7 +11,7 @@ import { FiveList } from "./components/FiveList/FiveList";
 import Header from "./components/Header/Header";
 import OnSignup from "./components/OnSignup/OnSignup";
 import PlayersList from "./components/PlayersList/PlayersList";
-import { useGlobalStore } from "./context";
+import { useGlobalStore } from "./store/GlobalStore";
 import { useEffect, useState } from "react";
 
 export default function App() {

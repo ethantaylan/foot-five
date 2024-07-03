@@ -1,12 +1,12 @@
 import { ChangeEvent, FC, useEffect, useState } from "react";
-import { Modals } from "../../constants/Modals";
-import { HiddenCloseModalButton } from "../HiddenCloseModalButton/HiddenCloseModalButton";
-import { FivePlaces } from "../../constants/FivePlaces";
-import { closeModal } from "../../utils/CloseModal";
-import { useSupabase } from "../../hooks/useSupabase";
-import { FivePlayerResponse } from "../../models/FivePlayer";
-import { supabase } from "../../supabase";
-import { useGlobalStore } from "../../context";
+import { Modals } from "../../../constants/Modals";
+import { HiddenCloseModalButton } from "../../Modal/HiddenCloseModalButton/HiddenCloseModalButton";
+import { FivePlaces } from "../../../constants/FivePlaces";
+import { closeModal } from "../../../utils/CloseModal";
+import { useSupabase } from "../../../hooks/UseSupabase";
+import { FivePlayerResponse } from "../../../models/FivePlayer";
+import { supabase } from "../../../supabase";
+import { useGlobalStore } from "../../../store/GlobalStore";
 
 export interface EditFiveModalProps {
   onConfirm: () => void;

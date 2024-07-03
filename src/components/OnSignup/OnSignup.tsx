@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/clerk-react";
 import { FC, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import { useSupabase } from "../../hooks/useSupabase";
+import { useSupabase } from "../../hooks/UseSupabase";
 import { PlayersResponse } from "../../models/Player";
 import { supabase } from "../../supabase";
 

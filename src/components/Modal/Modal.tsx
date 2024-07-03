@@ -1,6 +1,6 @@
 import { FC, PropsWithChildren } from "react";
 import { ModalActions } from "./ModalActions";
-import { HiddenCloseModalButton } from "../HiddenCloseModalButton/HiddenCloseModalButton";
+import { HiddenCloseModalButton } from "./HiddenCloseModalButton/HiddenCloseModalButton";
 
 export interface ModalProps {
   modalId: string;

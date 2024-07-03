@@ -1,20 +1,21 @@
 import { useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import { showModal } from "../../utils/ShowModal";
-import { NewFiveModal } from "../NewFiveModal/NewFiveModal";
+import { NewFiveModal } from "../Modals/NewFiveModal/NewFiveModal.tsx";
 import { Players, PlayersResponse } from "../../models/Player.ts";
 import { useUser } from "@clerk/clerk-react";
 import { Spinner } from "../Spinner/Spinner.tsx";
 import { Modals } from "../../constants/Modals.ts";
-import { Five, FiveResponse } from "../../models/Five.ts";
-import { Fives } from "../Fives/Fives.tsx";
-import { useSupabase } from "../../hooks/useSupabase.ts";
-import { useGlobalStore } from "../../context/index.tsx";
+import { useSupabase } from "../../hooks/UseSupabase.ts";
+import FiveHeader from "../FiveHeader/FiveListHeader.tsx";
+import { FiveResponse, Five as FiveModel } from "../../models/Five.ts";
+import { Five } from "../Five/Five.tsx";
+import { usePlayerInfoStore } from "../../store/PlayerInfo.ts";
 
 export const FiveList = () => {
-  const { setPlayerInfo } = useGlobalStore();
+  const { setPlayerInfo } = usePlayerInfoStore();
   const { user } = useUser();
-  const [fives, setFives] = useState<Five[]>([]);
+  const [fives, setFives] = useState<FiveModel[]>([]);
   const [fiveId, setFiveId] = useState<number>();
 
   const getFivesFetch = useSupabase<FiveResponse[]>(
@@ -43,7 +44,7 @@ export const FiveList = () => {
 
   useEffect(() => {
     getFivesFetch.response &&
-      setFives(getFivesFetch.response.map((f) => new Five(f)));
+      setFives(getFivesFetch.response.map((f) => new FiveModel(f)));
   }, [getFivesFetch.response]);
 
   useEffect(() => {
@@ -66,10 +67,8 @@ export const FiveList = () => {
     <div className="flex flex-col">
       <NewFiveModal onConfirm={() => getFivesFetch.executeFetch()} />
 
-      <h1 className="flex text-xl font-bold">Bienvenue !</h1>
-      <h2 className="mt-3 mb-1">Liste des fives</h2>
-
-      <Fives fives={fives} onRemoveFive={setFiveId} />
+      <FiveHeader />
+      <Five fives={fives} onRemoveFive={setFiveId} />
 
       <button
         onClick={() => showModal(Modals.NEW_FIVE_MODAL)}

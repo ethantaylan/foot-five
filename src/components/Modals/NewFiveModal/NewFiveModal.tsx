@@ -1,12 +1,12 @@
 import { ChangeEvent, FC, useState } from "react";
-import { supabase } from "../../supabase";
-import { Modals } from "../../constants/Modals";
-import { FiveResponse } from "../../models/Five";
-import { FivePlaces } from "../../constants/FivePlaces";
-import { HiddenCloseModalButton } from "../HiddenCloseModalButton/HiddenCloseModalButton";
-import { closeModal } from "../../utils/CloseModal";
-import { useSupabase } from "../../hooks/useSupabase";
-import { useGlobalStore } from "../../context";
+import { supabase } from "../../../supabase";
+import { Modals } from "../../../constants/Modals";
+import { FiveResponse } from "../../../models/Five";
+import { FivePlaces } from "../../../constants/FivePlaces";
+import { HiddenCloseModalButton } from "../../Modal/HiddenCloseModalButton/HiddenCloseModalButton";
+import { closeModal } from "../../../utils/CloseModal";
+import { useSupabase } from "../../../hooks/UseSupabase";
+import { usePlayerInfoStore } from "../../../store/PlayerInfo";
 
 export interface NewFiveModalProps {
   onConfirm: () => void;
@@ -18,7 +18,7 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
   const [fiveOtherPlace, setFiveOtherPlace] = useState<string>("");
   const [fiveDuration, setFiveDuration] = useState<string>("0");
 
-  const { playerInfo } = useGlobalStore();
+  const { playerInfo } = usePlayerInfoStore();
 
   const handlePlaceUrl = () => {
     switch (fivePlace) {

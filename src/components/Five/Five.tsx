@@ -1,18 +1,22 @@
 import { XCircleIcon } from "@heroicons/react/16/solid";
-import { Five } from "../../models/Five";
+import { Five as FiveModel } from "../../models/Five";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGlobalStore } from "../../context";
 import { FivePlayersAvatar } from "../FivePlayersAvatar/FivePlayersAvatar";
 import { formatDate } from "../../utils/FormatDate";
+import { useFiveStore } from "../../store/Five";
+import { usePlayerInfoStore } from "../../store/PlayerInfo";
+import { useAdminStore } from "../../store/Admin";
 
 export interface FivesProps {
-  fives: Five[];
+  fives: FiveModel[];
   onRemoveFive: (fiveId: number) => void;
 }
 
-export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
-  const { setFive, setPlayers, playerInfo, isUserAdmin } = useGlobalStore();
+export const Five: FC<FivesProps> = ({ fives, onRemoveFive }) => {
+  const { isUserAdmin } = useAdminStore();
+  const { setFive } = useFiveStore();
+  const { playerInfo } = usePlayerInfoStore();
   const navigate = useNavigate();
 
   return (
@@ -52,7 +56,6 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
                 onClick={() => {
                   navigate(`/fives/${f.id}`);
                   setFive(f);
-                  setPlayers(f.players);
                 }}
                 className="flex flex-col"
               >
