@@ -3,7 +3,7 @@ import Profil from "../Profil/Profil";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useEffect, useState } from "react";
 
-export const Header = () => {
+export default function Header() {
   const { pathname } = useLocation();
   const [date, setDate] = useState<string>("");
   const navigate = useNavigate();
@@ -54,4 +54,4 @@ export const Header = () => {
       </div>
     </div>
   );
-};
+}

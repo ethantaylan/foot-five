@@ -1,28 +1,25 @@
-import { FC, useEffect, useState } from "react";
-import { HiddenCloseModalButton } from "../HiddenCloseModalButton/HiddenCloseModalButton";
+import { FC, useState } from "react";
 import { useGlobalStore } from "../../context";
 import { Players } from "../../models/Player";
-import { Five } from "../../models/Five";
 import { formatDate } from "../../utils/FormatDate";
+import { Modal } from "../Modal/Modal";
+import { Modals } from "../../constants/Modals";
+import { useSupabase } from "../../hooks/useSupabase";
+import { supabase } from "../../supabase";
+import { useUser } from "@clerk/clerk-react";
+import { closeModal } from "../../utils/CloseModal";
 
 export interface UnSubscribeModalProps {
   onConfirm: () => void;
-  title: string;
-  modalId: string;
   label?: string;
-  five: Five;
 }
 
-export const UnSubscribeModal: FC<UnSubscribeModalProps> = ({
-  onConfirm,
-  title,
-  modalId,
-  five,
-}) => {
+export const UnSubscribeModal: FC<UnSubscribeModalProps> = ({ onConfirm }) => {
+  const { playerInfo, five } = useGlobalStore();
+  const { user } = useUser();
+
   const [hasConfirmed, setHasConfirmed] = useState(false);
   const [hasUnsubscribed, setHasUnsubscribed] = useState(false);
-
-  const { playerInfo } = useGlobalStore();
 
   function generatePlayerList(
     players: Players[],
@@ -53,15 +50,15 @@ export const UnSubscribeModal: FC<UnSubscribeModalProps> = ({
     return list;
   }
 
-  const subs = five.players.filter((p) => p.isSubstitute === true);
-  const nonSubs = five.players.filter((p) => !p.isSubstitute);
+  const subs = five?.players.filter((p) => p.isSubstitute === true);
+  const nonSubs = five?.players.filter((p) => !p.isSubstitute);
 
-  const subscribedPlayers = generatePlayerList(nonSubs);
-  const subscribedSubstitutePlayers = generateSubstituteList(subs);
+  const subscribedPlayers = generatePlayerList(nonSubs || []);
+  const subscribedSubstitutePlayers = generateSubstituteList(subs || []);
 
   const message = `⚽FIVE du ${formatDate(five?.date || "")}\n\n*${
     playerInfo?.userName
-  }* s'est inscrit 🙂 \n\nJoueurs:\n${
+  }* s'est dèsinscrit ☹️ \n\nJoueurs:\n${
     subscribedPlayers.length === 0 ? "_Pas de joueurs_" : subscribedPlayers
   }\n\nRemplaçants: \n${
     subscribedSubstitutePlayers.length === 0
@@ -69,30 +66,30 @@ export const UnSubscribeModal: FC<UnSubscribeModalProps> = ({
       : subscribedSubstitutePlayers
   }\n\n${window.location.href}`.replaceAll(",", " ");
 
-  useEffect(() => {
-    console.log(message);
-  }, []);
+  const deletePlayerFetch = useSupabase<Players>(
+    () =>
+      supabase
+        .from("five_players")
+        .delete()
+        .eq("player_id", user?.id)
+        .eq("five_id", five?.id),
+    false
+  );
+
+  const handleUnsuscribeConfirmation = () => {
+    deletePlayerFetch.executeFetch().then(() => {
+      onConfirm();
+      closeModal(Modals.UNSUBSCRIBE_MODAL);
+    });
+  };
 
   return (
-    <dialog id={modalId} className="modal">
-      <div className="modal-box">
-        <h3 className="font-bold text-lg">{title}</h3>
-
-        <p className="mt-5">Êtes-vous sûr(e) ?</p>
-
-        <div className="flex w-full gap-2 justify-end mt-6">
-          <HiddenCloseModalButton label="Annuler" />
-
-          <button
-            onClick={onConfirm}
-            className="btn btn-sm btn-primary rounded"
-          >
-            Confirmer
-          </button>
-        </div>
-      </div>
-
-      <HiddenCloseModalButton />
-    </dialog>
+    <Modal
+      modalId={Modals.UNSUBSCRIBE_MODAL}
+      title="Désinscription"
+      onConfirm={handleUnsuscribeConfirmation}
+    >
+      <p className="mt-5">Êtes-vous sûr(e) ?</p>
+    </Modal>
   );
 };

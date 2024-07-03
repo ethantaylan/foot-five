@@ -1,29 +1,24 @@
 import { useUser } from "@clerk/clerk-react";
 import { startCase } from "lodash";
-import { ChangeEvent, FC, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useSupabase } from "../../hooks/useSupabase";
 import { Players, PlayersResponse } from "../../models/Player";
 import { supabase } from "../../supabase";
 import { Switch } from "../Switch/Switch";
-import { Five } from "../../models/Five";
 import { Modals } from "../../constants/Modals";
-import { HiddenCloseModalButton } from "../HiddenCloseModalButton/HiddenCloseModalButton";
 import { closeModal } from "../../utils/CloseModal";
 import { formatDate } from "../../utils/FormatDate";
+import { useGlobalStore } from "../../context";
 import axios from "axios";
+import { Modal } from "../Modal/Modal";
 
-export interface SubscribeModalProps {
+interface SubscribeModalProps {
   onConfirm: () => void;
-  five: Five;
-  playerInfo: Players;
 }
 
-export const SubscribeModal: FC<SubscribeModalProps> = ({
-  onConfirm,
-  five,
-  playerInfo,
-}) => {
+export default function SubscribeModal({ onConfirm }: SubscribeModalProps) {
   const { user } = useUser();
+  const { isDevEnv, five, playerInfo } = useGlobalStore();
   const [isSubstitute, setIsSubstitute] = useState<boolean>(false);
   const [userName, setUserName] = useState<string>(playerInfo?.userName ?? "");
 
@@ -43,7 +38,7 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
   const subscribePlayerToFiveFetch = useSupabase<Players>(
     () =>
       supabase.from("five_players").insert({
-        five_id: five.id,
+        five_id: five?.id,
         player_id: user?.id,
         is_substitute: isSubstitute,
         player_name: userName,
@@ -55,71 +50,38 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
     () =>
       supabase
         .from("players")
-        .update({
-          user_name: userName,
-        })
+        .update({ user_name: userName })
         .eq("user_id", user?.id),
     false
   );
 
-  function generatePlayerList(
-    players: Players[],
-    includePlayerInfo = false,
-    isSubstitute = false
-  ) {
-    let list = (players || [])
-      .map((p, index) => `${index + 1} ${p.userName} \n`)
-      .join("");
-    if (includePlayerInfo && !isSubstitute) {
-      list += `${players.length + 1} ${playerInfo.userName}\n`;
-    }
-    return list;
-  }
+  const generateList = (players: Players[], includePlayerInfo = false) =>
+    players.map((p, index) => `${index + 1} ${p.userName} \n`).join("") +
+    (includePlayerInfo ? `${players.length + 1} ${playerInfo?.userName}\n` : "");
 
-  function generateSubstituteList(
-    subs: Players[],
-    includePlayerInfo = false,
-    isSubstitute = false
-  ) {
-    let list = (subs || [])
-      .map((p, index) => `${index + 1} ${p.userName} \n`)
-      .join("");
-    if (includePlayerInfo && isSubstitute) {
-      list += `${subs.length + 1} ${playerInfo.userName}\n`;
-    }
-    return list;
-  }
-
-  const subs = five.players.filter((p) => p.isSubstitute === true);
-  const nonSubs = five.players.filter((p) => !p.isSubstitute);
-
-  const subscribedPlayers = generatePlayerList(
-    nonSubs,
-    !isSubstitute,
-    isSubstitute
+  const subscribedPlayers = generateList(
+    (five?.players || []).filter((p) => !p.isSubstitute),
+    !isSubstitute
   );
-  const subscribedSubstitutePlayers = generateSubstituteList(
-    subs,
-    isSubstitute,
+  const subscribedSubstitutePlayers = generateList(
+    (five?.players || []).filter((p) => p.isSubstitute),
     isSubstitute
   );
 
   const message = `⚽FIVE du ${formatDate(five?.date || "")}\n\n*${
     playerInfo?.userName
   }* s'est inscrit 🙂 \n\nJoueurs:\n${
-    subscribedPlayers.length === 0 ? "_Pas de joueurs_" : subscribedPlayers
+    subscribedPlayers || "_Pas de joueurs_"
   }\n\nRemplaçants: \n${
-    subscribedSubstitutePlayers.length === 0
-      ? "_Pas de remplaçants_"
-      : subscribedSubstitutePlayers
+    subscribedSubstitutePlayers || "_Pas de remplaçants_"
   }\n\n${window.location.href}`.replaceAll(",", " ");
 
   const handleSendNewPlayerMessage = async () => {
-    axios.post(
+    await axios.post(
       "https://academic-wendy-ethantaylan-3cf3d20b.koyeb.app/send-message",
       {
-        message: message,
-        group: "120363181297536515@g.us",
+        message,
+        group: isDevEnv ? "120363312585357097@g.us" : "120363181297536515@g.us",
       }
     );
   };
@@ -129,65 +91,46 @@ export const SubscribeModal: FC<SubscribeModalProps> = ({
       await subscribePlayerFetch.executeFetch();
     }
 
-    const isPlayerAlreadySubscribed = five.players.find(
-      (player) => player.userId === playerInfo.userId
+    const isPlayerAlreadySubscribed = five?.players.some(
+      (player) => player.userId === playerInfo?.userId
     );
 
     if (!isPlayerAlreadySubscribed) {
-      updateUsernameFetch.executeFetch();
-      subscribePlayerToFiveFetch.executeFetch().then(() => {
-        handleSendNewPlayerMessage();
-      });
-
+      await updateUsernameFetch.executeFetch();
+      await subscribePlayerToFiveFetch.executeFetch();
+      await handleSendNewPlayerMessage();
       onConfirm();
       closeModal(Modals.SUBSCRIBE_MODAL);
     }
   };
 
   return (
-    <dialog id={Modals.SUBSCRIBE_MODAL} className="modal">
-      <div className="modal-box">
-        <h3 className="font-bold mb-5 text-lg">Inscription</h3>
-
-        <div className="flex flex-col gap-3">
-          <label htmlFor="lastName" className="label-text">
-            Nom
-          </label>
-
-          <input
-            onChange={(event: ChangeEvent<HTMLInputElement>) =>
-              setUserName(event.target.value)
-            }
-            value={startCase(userName)}
-            name="lastName"
-            type="text"
-            placeholder="Type here"
-            className="input input-bordered input-sm w-fulls"
-          />
-        </div>
-
-        <Switch
-          label="Remplaçant"
-          isChecked={isSubstitute || (five?.players ?? [])?.length === 10}
-          onToggle={() => setIsSubstitute(!isSubstitute)}
+    <Modal
+      modalId={Modals.SUBSCRIBE_MODAL}
+      title="Inscription"
+      onConfirm={handleConfirm}
+      confirmButtonDisabled={!userName}
+    >
+      <div className="flex flex-col gap-3">
+        <label htmlFor="userName" className="label-text">
+          Nom
+        </label>
+        <input
+          id="userName"
+          type="text"
+          placeholder="Type here"
+          value={startCase(userName)}
+          onChange={(e: ChangeEvent<HTMLInputElement>) =>
+            setUserName(e.target.value)
+          }
+          className="input input-bordered input-sm w-full"
         />
-
-        <div className="flex w-full gap-2 justify-end mt-6">
-          <form method="dialog">
-            <button className="btn btn-sm btn-ghost">Annuler</button>
-          </form>
-
-          <button
-            disabled={userName.length === 0}
-            onClick={() => handleConfirm()}
-            className="btn btn-sm btn-primary rounded"
-          >
-            Confirmer
-          </button>
-        </div>
       </div>
-
-      <HiddenCloseModalButton />
-    </dialog>
+      <Switch
+        label="Remplaçant"
+        isChecked={isSubstitute || five?.players.length === 10}
+        onToggle={() => setIsSubstitute((prev) => !prev)}
+      />
+    </Modal>
   );
-};
+}
