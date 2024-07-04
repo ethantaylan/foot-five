@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import { showModal } from "../../utils/ShowModal";
 import { NewFiveModal } from "../Modals/NewFiveModal/NewFiveModal.tsx";
@@ -12,7 +12,7 @@ import { FiveResponse, Five as FiveModel } from "../../models/Five.ts";
 import { Five } from "../Five/Five.tsx";
 import { usePlayerInfoStore } from "../../store/PlayerInfo.ts";
 
-export const FiveList = () => {
+export const FiveList: FC = () => {
   const { setPlayerInfo } = usePlayerInfoStore();
   const { user } = useUser();
   const [fives, setFives] = useState<FiveModel[]>([]);

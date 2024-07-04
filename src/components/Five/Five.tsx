@@ -33,7 +33,7 @@ export const Five: FC<FivesProps> = ({ fives, onRemoveFive }) => {
               key={f.id}
               className={`w-full cursor-pointer border-l-4 ${
                 isPastFive ? "border-red-500" : "border-green-500"
-              } border-opacity-65 bg-white shadow-sm p-2 rounded`}
+              } border-opacity-65 shadow-sm p-2 bg-white rounded`}
             >
               <div className="flex relative items-center justify-between">
                 <h2 className="font-bold">{formatDate(f.date)}</h2>

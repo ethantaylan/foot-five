@@ -1,25 +1,22 @@
 import { useUser } from "@clerk/clerk-react";
 import { startCase } from "lodash";
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useState } from "react";
 import { useSupabase } from "../../../hooks/UseSupabase";
 import { Players, PlayersResponse } from "../../../models/Player";
 import { supabase } from "../../../supabase";
 import { Switch } from "../../Switch/Switch";
 import { Modals } from "../../../constants/Modals";
 import { closeModal } from "../../../utils/CloseModal";
-import { useGlobalStore } from "../../../store/GlobalStore";
-import axios from "axios";
 import { Modal } from "../../Modal/Modal";
 import { useFiveStore } from "../../../store/Five";
 import { usePlayerInfoStore } from "../../../store/PlayerInfo";
 
-interface SubscribeModalProps {
+export interface SubscribeModalProps {
   onConfirm: () => void;
 }
 
 export default function SubscribeModal({ onConfirm }: SubscribeModalProps) {
   const { user } = useUser();
-  const { isDevEnv } = useGlobalStore();
   const { five } = useFiveStore();
   const { playerInfo } = usePlayerInfoStore();
   const [isSubstitute, setIsSubstitute] = useState<boolean>(false);
@@ -57,8 +54,6 @@ export default function SubscribeModal({ onConfirm }: SubscribeModalProps) {
         .eq("user_id", user?.id),
     false
   );
-
-  const message = `${five?.players.map((p) => p.userName)}`;
 
   const handleConfirm = async () => {
     if (!playerInfo) {
