@@ -6,7 +6,7 @@ import { closeModal } from "../../../utils/CloseModal";
 import { useSupabase } from "../../../hooks/UseSupabase";
 import { FivePlayerResponse } from "../../../models/FivePlayer";
 import { supabase } from "../../../supabase";
-import { useGlobalStore } from "../../../store/GlobalStore";
+import { useFiveStore } from "../../../store/Five";
 
 export interface EditFiveModalProps {
   onConfirm: () => void;
@@ -18,7 +18,7 @@ export const EditFiveModal: FC<EditFiveModalProps> = ({ onConfirm }) => {
   const [fiveOtherPlace, setFiveOtherPlace] = useState<string>("");
   const [fiveDuration, setFiveDuration] = useState<string>("");
 
-  const { five } = useGlobalStore();
+  const { five } = useFiveStore();
 
   const handleIsFiveValid = () => {
     const selectedDate = new Date(fiveDate);
