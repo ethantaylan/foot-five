@@ -5,7 +5,7 @@ import { FiveResponse } from "../../../models/Five";
 import { FivePlaces } from "../../../constants/FivePlaces";
 import { HiddenCloseModalButton } from "../../Modal/HiddenCloseModalButton/HiddenCloseModalButton";
 import { closeModal } from "../../../utils/CloseModal";
-import { useSupabase } from "../../../hooks/UseSupabase";
+import { useSupabase } from "../../../hooks/useSupabase";
 import { usePlayerInfoStore } from "../../../store/PlayerInfo";
 
 export interface NewFiveModalProps {

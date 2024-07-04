@@ -1,7 +1,7 @@
 import { useUser } from "@clerk/clerk-react";
 import { FC } from "react";
 import { Modals } from "../../../constants/Modals";
-import { useSupabase } from "../../../hooks/UseSupabase";
+import { useSupabase } from "../../../hooks/useSupabase";
 import { Players } from "../../../models/Player";
 import { supabase } from "../../../supabase";
 import { closeModal } from "../../../utils/CloseModal";

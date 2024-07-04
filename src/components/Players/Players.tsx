@@ -2,7 +2,7 @@ import { FC, useEffect, useState } from "react";
 import { Players } from "../../models/Player";
 import { showModal } from "../../utils/ShowModal";
 import { XCircleIcon } from "@heroicons/react/20/solid";
-import { useSupabase } from "../../hooks/UseSupabase";
+import { useSupabase } from "../../hooks/useSupabase";
 import { supabase } from "../../supabase";
 import { useParams } from "react-router-dom";
 import { Modals } from "../../constants/Modals";

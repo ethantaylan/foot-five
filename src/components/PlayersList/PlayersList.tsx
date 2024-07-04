@@ -8,7 +8,7 @@ import { useParams } from "react-router-dom";
 import { useUser } from "@clerk/clerk-react";
 import { Spinner } from "../Spinner/Spinner";
 import { FiveInformation } from "../FiveInformation/FiveInformation";
-import { useSupabase } from "../../hooks/UseSupabase";
+import { useSupabase } from "../../hooks/useSupabase";
 import SubscribeModal from "../Modals/SubscribeModal/SubscribeModal";
 import { EditFiveModal } from "../Modals/EditFiveModal/EditFiveModal";
 import { DeleteFiveModal } from "../Modals/DeleteFiveModal/DeleteFiveModal";

@@ -2,7 +2,7 @@ import { FC } from "react";
 import { Modals } from "../../../constants/Modals";
 import { closeModal } from "../../../utils/CloseModal";
 import { useNavigate } from "react-router-dom";
-import { useSupabase } from "../../../hooks/UseSupabase";
+import { useSupabase } from "../../../hooks/useSupabase";
 import { supabase } from "../../../supabase";
 import { Players } from "../../../models/Player";
 import { Modal } from "../../Modal/Modal";

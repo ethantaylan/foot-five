@@ -10,7 +10,7 @@ import FiveHeader from "../FiveHeader/FiveListHeader.tsx";
 import { FiveResponse, Five as FiveModel } from "../../models/Five.ts";
 import { Five } from "../Five/Five.tsx";
 import { usePlayerInfoStore } from "../../store/PlayerInfo.ts";
-import { useSupabase } from "../../hooks/UseSupabase.ts";
+import { useSupabase } from "../../hooks/useSupabase.ts";
 
 export const FiveList: FC = () => {
   const { setPlayerInfo } = usePlayerInfoStore();

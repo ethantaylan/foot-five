@@ -3,7 +3,7 @@ import { Modals } from "../../../constants/Modals";
 import { HiddenCloseModalButton } from "../../Modal/HiddenCloseModalButton/HiddenCloseModalButton";
 import { FivePlaces } from "../../../constants/FivePlaces";
 import { closeModal } from "../../../utils/CloseModal";
-import { useSupabase } from "../../../hooks/UseSupabase";
+import { useSupabase } from "../../../hooks/useSupabase";
 import { FivePlayerResponse } from "../../../models/FivePlayer";
 import { supabase } from "../../../supabase";
 import { useFiveStore } from "../../../store/Five";
