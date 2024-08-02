@@ -1,6 +1,5 @@
 import { FC, PropsWithChildren } from "react";
 import { ModalActions } from "./ModalActions";
-import { HiddenCloseModalButton } from "./HiddenCloseModalButton/HiddenCloseModalButton";
 
 export interface ModalProps {
   modalId: string;
@@ -27,8 +26,6 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
           confirmButtonDisabled={confirmButtonDisabled}
           onConfirm={onConfirm}
         />
-
-        <HiddenCloseModalButton />
       </div>
     </dialog>
   );

@@ -143,6 +143,12 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
 
         <div className="flex w-full gap-2 justify-end mt-6">
           <button
+            onClick={() => closeModal(Modals.NEW_FIVE_MODAL)}
+            className="btn btn-sm btn-ghost rounded"
+          >
+            Annuler
+          </button>
+          <button
             disabled={
               fiveDate.length === 0 ||
               fivePlace.length === 0 ||

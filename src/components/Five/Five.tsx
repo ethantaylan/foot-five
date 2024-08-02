@@ -69,7 +69,7 @@ export const Five: FC<FivesProps> = ({ fives, onRemoveFive }) => {
                   <span className="text-secondary text-xs">
                     Organisé par:
                     <span className="font-bold ms-1">
-                      {f.organizer?.username || "N/A"}
+                      {f.organizer.username ?? "N/A"}
                     </span>
                   </span>
                 </div>
@@ -78,8 +78,8 @@ export const Five: FC<FivesProps> = ({ fives, onRemoveFive }) => {
           );
         })
       ) : (
-        <h6 className="my-5 rounded alert alert-primary shadow-md">
-          {"Il n'y a pas de fives d'organisés :("}
+        <h6 className="mb-5 rounded alert alert-primary shadow-md">
+          {"Il n'y a pas de fives d'organisé 🙁"}
         </h6>
       )}
     </div>

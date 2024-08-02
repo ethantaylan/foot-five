@@ -13,9 +13,10 @@ import OnSignup from "./components/OnSignup/OnSignup";
 import PlayersList from "./components/PlayersList/PlayersList";
 import { useGlobalStore } from "./store/GlobalStore";
 import { useEffect, useState } from "react";
+import { Groups } from "./components/Groups/Groups";
 
 export default function App() {
-  const { setIsDevEnv, isDevEnv } = useGlobalStore();
+  const { setIsDevEnv } = useGlobalStore();
   const [isAppReady, setIsAppReady] = useState<boolean>(false);
 
   useEffect(() => {
@@ -24,8 +25,6 @@ export default function App() {
 
   useEffect(() => {
     setIsDevEnv(location.hostname.includes("localhost"));
-
-    isAppReady && console.log(isDevEnv);
   }, [isAppReady]);
 
   return (
