@@ -5,11 +5,19 @@ import { showModal } from "../../utils/ShowModal";
 export interface GroupsCards {
   groupName: string;
   membersLenght: number;
+  onClick: () => void;
 }
 
-export const GroupsCards = ({ groupName, membersLenght }: GroupsCards) => {
+export const GroupsCards = ({
+  groupName,
+  membersLenght,
+  onClick,
+}: GroupsCards) => {
   return (
-    <div className="card cursor-pointer hover:scale-105 bg-base-100 bg-opacity-85 min-w-32 shadow-md">
+    <div
+      onClick={onClick}
+      className="card cursor-pointer hover:scale-105 bg-base-100 bg-opacity-85 min-w-32 shadow-md"
+    >
       <div className="flex items-center pt-2 justify-center">
         <span className="text-2xl p-3 font-bold bg-lime-100 rounded-full text-lime-500">
           {groupName.slice(0, 2).toUpperCase()}

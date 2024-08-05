@@ -12,7 +12,7 @@ import { Five } from "../Five/Five.tsx";
 import { usePlayerInfoStore } from "../../store/PlayerInfo.ts";
 import { useSupabase } from "../../hooks/useSupabase.ts";
 import { JoinGroupModal } from "../Modals/JoinGroupModal/JoinGroupModal.tsx";
-import { NewGroupModal } from "../Modals/NewGroupModal/NewGroupModal.tsx";
+
 import { Groups } from "../Groups/Groups.tsx";
 
 export const FiveList: FC = () => {
@@ -40,22 +40,6 @@ export const FiveList: FC = () => {
     () => supabase.from("players").select().eq("user_id", user?.id).single(),
     false
   );
-
-  // const getGroupsFetch = useSupabase<GroupsResponse[]>(
-  //   () => supabase.from("groups").select("*"),
-  //   false
-  // );
-
-  // useEffect(() => {
-  //   if (getGroupsFetch.response) {
-  //     const mappedGroups = getGroupsFetch.response.map((g) => new Groups(g));
-  //     setGroups(mappedGroups);
-  //   }
-  // }, [getGroupsFetch.response]);
-
-  // useEffect(() => {
-  //   user && getGroupsFetch.executeFetch();
-  // }, [user]);
 
   useEffect(() => {
     user && playerInfoFetch.executeFetch();
@@ -86,7 +70,6 @@ export const FiveList: FC = () => {
     <div className="flex flex-col">
       <NewFiveModal onConfirm={() => getFivesFetch.executeFetch()} />
       <JoinGroupModal />
-      <NewGroupModal />
       <Groups />
 
       <FiveHeader />
@@ -100,12 +83,12 @@ export const FiveList: FC = () => {
         Nouveau five
       </button>
 
-      {/* <button
+      <button
         onClick={() => showModal(Modals.JOIN_GROUP_MODAL)}
-        className="btn mt-3 w-full btn-sm rounded btn-primary"
+        className="btn mt-3 w-full btn-outline rounded btn-primary"
       >
         Rejoindre un groupe
-      </button> */}
+      </button>
     </div>
   );
 };

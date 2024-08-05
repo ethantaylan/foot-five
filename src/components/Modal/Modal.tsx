@@ -15,6 +15,7 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
   title,
   children,
   confirmButtonDisabled,
+  onCancel,
 }) => {
   return (
     <dialog id={modalId} className="modal">
@@ -23,6 +24,7 @@ export const Modal: FC<PropsWithChildren<ModalProps>> = ({
 
         {children}
         <ModalActions
+          onCancel={onCancel}
           confirmButtonDisabled={confirmButtonDisabled}
           onConfirm={onConfirm}
         />

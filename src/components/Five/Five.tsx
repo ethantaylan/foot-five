@@ -78,7 +78,7 @@ export const Five: FC<FivesProps> = ({ fives, onRemoveFive }) => {
           );
         })
       ) : (
-        <h6 className="mb-5 rounded alert alert-primary shadow-md">
+        <h6 className="mb-3 rounded alert alert-primary shadow-md">
           {"Il n'y a pas de fives d'organisé 🙁"}
         </h6>
       )}

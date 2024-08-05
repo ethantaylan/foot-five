@@ -11,14 +11,14 @@ export interface ModalActions {
 export const ModalActions: FC<ModalActions> = ({
   onCancel,
   onConfirm,
-  confirmButtonLabel = "Confirm",
-  cancelButtonLabel = "Cancel",
+  confirmButtonLabel = "Confirmer",
+  cancelButtonLabel = "Annuler",
   confirmButtonDisabled = false,
 }) => {
   return (
     <div className="flex w-full gap-2 justify-end mt-6">
       <form method="dialog">
-        <button onClick={onCancel} className="btn btn-sm btn-ghost">
+        <button onClick={onCancel} className="btn btn-sm">
           {cancelButtonLabel}
         </button>
       </form>

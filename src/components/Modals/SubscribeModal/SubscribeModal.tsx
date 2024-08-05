@@ -95,6 +95,7 @@ export default function SubscribeModal({ onConfirm }: SubscribeModalProps) {
         />
       </div>
       <Switch
+        className="mt-3"
         label="Remplaçant"
         isChecked={isSubstitute || five?.players.length === 10}
         onToggle={() => setIsSubstitute((prev) => !prev)}
