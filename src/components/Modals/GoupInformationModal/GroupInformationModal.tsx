@@ -1,35 +1,35 @@
 import { Modals } from "../../../constants/Modals";
 import { useSupabase } from "../../../hooks/useSupabase";
-import { Groups } from "../../../models/Groups";
+import { useGroupsStore } from "../../../store/GroupsStore";
 import { supabase } from "../../../supabase";
 import { closeModal } from "../../../utils/CloseModal";
 import { Modal } from "../../Modal/Modal";
 
 export interface GroupInformationModal {
-  group: Groups | null;
   onConfirm: () => void;
   onDeleteGroupe: () => void;
 }
 
 export const GroupInformationModal = ({
-  group,
   onConfirm,
   onDeleteGroupe,
 }: GroupInformationModal) => {
+  const { selectedGroup } = useGroupsStore();
+
   const deleteGroupFetch = useSupabase(
-    () => supabase.from("groups").delete().eq("id", group?.id),
+    () => supabase.from("groups").delete().eq("id", selectedGroup?.id),
     false
   );
 
   return (
     <Modal
       modalId={Modals.GROUP_INFORMARION_MODAL}
-      title={`Information du groupe ${group?.name}`}
+      title={`Information du groupe ${selectedGroup?.name}`}
       onConfirm={onConfirm}
     >
       <div>
         <label className="label-text flex mb-3">Membres</label>
-        {group?.playersId?.map((a) => (
+        {selectedGroup?.playersId?.map((a) => (
           <p key={a}>{a}</p>
         ))}
       </div>

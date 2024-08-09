@@ -6,12 +6,14 @@ export interface GroupsCards {
   groupName: string;
   membersLenght: number;
   onClick: () => void;
+  fives: number;
 }
 
 export const GroupsCards = ({
   groupName,
   membersLenght,
   onClick,
+  fives,
 }: GroupsCards) => {
   return (
     <div
@@ -27,6 +29,7 @@ export const GroupsCards = ({
         <div className="flex items-center justify-center flex-col">
           <h3>{groupName}</h3>
           <small className="text-neutral-500">{membersLenght} membres</small>
+          <small className="text-neutral-500">{fives} fives</small>
         </div>
       </div>
     </div>
