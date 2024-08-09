@@ -8,6 +8,7 @@ export interface Organizer {
 
 export interface FiveResponse {
   id: number;
+  five_id: string;
   date: string;
   place: string;
   place_url: string;
@@ -18,6 +19,7 @@ export interface FiveResponse {
 
 export class Five {
   id: number;
+  fiveId: string;
   date: string;
   place: string;
   placeUrl: string;
@@ -33,7 +35,9 @@ export class Five {
     organizer,
     five_players,
     duration,
+    five_id
   }: FiveResponse) {
+    this.fiveId = five_id;
     this.date = date;
     this.id = id;
     this.place = place;

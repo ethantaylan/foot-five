@@ -1,24 +1,70 @@
-import { ChangeEvent, FC, useState } from "react";
-import { supabase } from "../../supabase";
-import { Modals } from "../../constants/Modals";
-import { FiveResponse } from "../../models/Five";
-import { FivePlaces } from "../../constants/FivePlaces";
-import { HiddenCloseModalButton } from "../HiddenCloseModalButton/HiddenCloseModalButton";
-import { closeModal } from "../../utils/CloseModal";
-import { useSupabase } from "../../hooks/useSupabase";
-import { useGlobalStore } from "../../context";
+import { ChangeEvent, FC, useEffect, useState } from "react";
+import { supabase } from "../../../supabase";
+import { Modals } from "../../../constants/Modals";
+import { FiveResponse } from "../../../models/Five";
+import { FivePlaces } from "../../../constants/FivePlaces";
+import { HiddenCloseModalButton } from "../../Modal/HiddenCloseModalButton/HiddenCloseModalButton";
+import { closeModal } from "../../../utils/CloseModal";
+import { useSupabase } from "../../../hooks/useSupabase";
+import { usePlayerInfoStore } from "../../../store/PlayerInfo";
+import { Groups } from "../../../models/Groups";
+import { v4 as uuidv4 } from "uuid";
 
 export interface NewFiveModalProps {
   onConfirm: () => void;
+  groups: Groups[];
 }
 
-export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
+export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm, groups }) => {
   const [fiveDate, setFiveDate] = useState<string>("");
   const [fivePlace, setFivePlace] = useState<string>("");
   const [fiveOtherPlace, setFiveOtherPlace] = useState<string>("");
   const [fiveDuration, setFiveDuration] = useState<string>("0");
+  const [selectedGroup, setSelectedGroup] = useState<Groups>(groups[0]);
+  const [fivesId, setFivesId] = useState<string[]>([]);
+  const [singleUuid] = useState<string>(uuidv4());
+  const { playerInfo } = usePlayerInfoStore();
 
-  const { playerInfo } = useGlobalStore();
+  const addNewFiveFetch = useSupabase<FiveResponse[]>(
+    () =>
+      supabase
+        .from("fives")
+        .insert([
+          {
+            five_id: singleUuid,
+            date: fiveDate,
+            place: fivePlace === FivePlaces.AUTRE ? fiveOtherPlace : fivePlace,
+            place_url: handlePlaceUrl(),
+            organizer: {
+              username: playerInfo?.userName,
+              id: playerInfo?.userId,
+            },
+            duration: fiveDuration,
+            group_id: selectedGroup?.id,
+          },
+        ])
+        .select(),
+    false
+  );
+
+  const addFiveToGroupFetch = useSupabase(
+    () =>
+      supabase
+        .from("groups")
+        .update({
+          fives_id: fivesId,
+        })
+        .eq("id", selectedGroup.id),
+    false
+  );
+
+  useEffect(() => {
+    const ids = groups
+      .find((g) => g.id === selectedGroup?.id)
+      ?.fivesId.concat(singleUuid);
+
+    setFivesId(ids ?? []);
+  }, [selectedGroup]);
 
   const handlePlaceUrl = () => {
     switch (fivePlace) {
@@ -43,32 +89,53 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
     return false;
   };
 
-  const addNewFiveFetch = useSupabase<FiveResponse[]>(
-    () =>
-      supabase
-        .from("fives")
-        .insert([
-          {
-            date: fiveDate,
-            place: fivePlace === FivePlaces.AUTRE ? fiveOtherPlace : fivePlace,
-            place_url: handlePlaceUrl(),
-            organizer: {
-              username: playerInfo?.userName,
-              id: playerInfo?.userId,
-            },
-            duration: fiveDuration,
-          },
-        ])
-        .select(),
-    false
-  );
-
   return (
     <dialog id={Modals.NEW_FIVE_MODAL} className="modal">
       <HiddenCloseModalButton />
 
       <div className="modal-box">
         <h3 className="font-bold mb-5 text-lg">Nouveau five</h3>
+
+        <label htmlFor="set-five-date" className="label-text">
+          Groupe
+        </label>
+        <div className="flex gap-3">
+          {groups.map((g) => (
+            <div
+              key={g.id}
+              onClick={() => setSelectedGroup(g)}
+              className={`card cursor-pointer hover:scale-105 bg-opacity-85 w-28 h-24 mb-5 shadow-md ${
+                selectedGroup?.id === g?.id
+                  ? "opacity-100 border border-lime-200"
+                  : "opacity-50"
+              }`}
+            >
+              <div className="flex items-center pt-2 justify-center">
+                <span
+                  className={`text-md p-2 font-bold rounded-full ${
+                    selectedGroup?.id === g.id
+                      ? "bg-lime-100"
+                      : "bg-neutral-100"
+                  } ${
+                    selectedGroup?.id === g.id
+                      ? "text-lime-500"
+                      : "text-neutral-500"
+                  }`}
+                >
+                  {g.name.slice(0, 2).toUpperCase()}
+                </span>
+              </div>
+              <div className="p-2 pt-0 items-center text-center">
+                <div className="flex items-center justify-center flex-col">
+                  <h3>{g.name}</h3>
+                  <small className="text-neutral-500">
+                    {g.playersId.length} membres
+                  </small>
+                </div>
+              </div>
+            </div>
+          ))}
+        </div>
 
         <div className="mb-5">
           <label htmlFor="set-five-date" className="label-text">
@@ -143,6 +210,12 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
 
         <div className="flex w-full gap-2 justify-end mt-6">
           <button
+            onClick={() => closeModal(Modals.NEW_FIVE_MODAL)}
+            className="btn btn-sm btn-ghost rounded"
+          >
+            Annuler
+          </button>
+          <button
             disabled={
               fiveDate.length === 0 ||
               fivePlace.length === 0 ||
@@ -152,6 +225,7 @@ export const NewFiveModal: FC<NewFiveModalProps> = ({ onConfirm }) => {
             }
             onClick={() =>
               addNewFiveFetch.executeFetch().then(() => {
+                addFiveToGroupFetch.executeFetch();
                 onConfirm();
                 closeModal(Modals.NEW_FIVE_MODAL);
                 setFiveDate("");

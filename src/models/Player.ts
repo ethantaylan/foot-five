@@ -9,6 +9,7 @@ export interface PlayersResponse {
   full_name: string;
   user_name: string;
   is_admin: boolean;
+  groups: string[];
 }
 
 export class Players {
@@ -22,6 +23,7 @@ export class Players {
   fullName: string;
   userName: string;
   isAdmin: boolean;
+  groups: string[];
 
   constructor({
     is_substitute,
@@ -34,6 +36,7 @@ export class Players {
     full_name,
     user_name,
     is_admin,
+    groups,
   }: PlayersResponse) {
     this.userName = user_name;
     this.isSubstitute = is_substitute;
@@ -45,5 +48,6 @@ export class Players {
     this.userImg = user_img;
     this.fullName = full_name;
     this.isAdmin = is_admin;
+    this.groups = groups;
   }
 }

@@ -1,23 +1,24 @@
 import { ChangeEvent, FC, useEffect, useState } from "react";
-import { Modals } from "../../constants/Modals";
-import { HiddenCloseModalButton } from "../HiddenCloseModalButton/HiddenCloseModalButton";
-import { Five } from "../../models/Five";
-import { FivePlaces } from "../../constants/FivePlaces";
-import { closeModal } from "../../utils/CloseModal";
-import { useSupabase } from "../../hooks/useSupabase";
-import { FivePlayerResponse } from "../../models/FivePlayer";
-import { supabase } from "../../supabase";
+import { Modals } from "../../../constants/Modals";
+import { HiddenCloseModalButton } from "../../Modal/HiddenCloseModalButton/HiddenCloseModalButton";
+import { FivePlaces } from "../../../constants/FivePlaces";
+import { closeModal } from "../../../utils/CloseModal";
+import { useSupabase } from "../../../hooks/useSupabase";
+import { FivePlayerResponse } from "../../../models/FivePlayer";
+import { supabase } from "../../../supabase";
+import { useFiveStore } from "../../../store/Five";
 
 export interface EditFiveModalProps {
-  five: Five;
   onConfirm: () => void;
 }
 
-export const EditFiveModal: FC<EditFiveModalProps> = ({ five, onConfirm }) => {
+export const EditFiveModal: FC<EditFiveModalProps> = ({ onConfirm }) => {
   const [fiveDate, setFiveDate] = useState<string>("");
   const [fivePlace, setFivePlace] = useState<string>("");
   const [fiveOtherPlace, setFiveOtherPlace] = useState<string>("");
   const [fiveDuration, setFiveDuration] = useState<string>("");
+
+  const { five } = useFiveStore();
 
   const handleIsFiveValid = () => {
     const selectedDate = new Date(fiveDate);
@@ -38,7 +39,7 @@ export const EditFiveModal: FC<EditFiveModalProps> = ({ five, onConfirm }) => {
           date: fiveDate,
           duration: fiveDuration,
         })
-        .eq("id", five.id)
+        .eq("id", five?.id)
         .select(),
     false
   );
@@ -101,7 +102,9 @@ export const EditFiveModal: FC<EditFiveModalProps> = ({ five, onConfirm }) => {
                 setFiveOtherPlace(e.target.value)
               }
               type="text"
-              className={`input input-bordered w-full input-sm mt-3 ${fiveOtherPlace.length === 0 && "border-red-500"}`}
+              className={`input input-bordered w-full input-sm mt-3 ${
+                fiveOtherPlace.length === 0 && "border-red-500"
+              }`}
               placeholder="Lieu..."
             />
           )}
@@ -117,7 +120,9 @@ export const EditFiveModal: FC<EditFiveModalProps> = ({ five, onConfirm }) => {
                 onClick={() => setFiveDuration(duration)}
                 key={duration}
                 role="tab"
-                className={`tab font-bold ${duration === fiveDuration && "tab-active"}`}
+                className={`tab font-bold ${
+                  duration === fiveDuration && "tab-active"
+                }`}
               >
                 {duration}
               </button>

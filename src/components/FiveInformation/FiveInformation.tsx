@@ -34,7 +34,7 @@ export const FiveInformation: FC<FiveInformationProps> = ({
       <div className="flex items-center">
         <h2 className="font-bold">{formatDate(five.date)}</h2>
         <WhatsappShareButton url={window.location.href}>
-          <WhatsappIcon className="w-5 ms-2 h-5 cursor-pointer hover:text-neutral-600" />
+          <WhatsappIcon className="w-5 ms-2 h-5 rounded-full cursor-pointer hover:text-neutral-600" />
         </WhatsappShareButton>
 
         <ShareIcon

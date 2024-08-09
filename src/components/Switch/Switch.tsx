@@ -4,11 +4,17 @@ export interface SwitchProps {
   label: string;
   isChecked: boolean;
   onToggle: (value: string) => void;
+  className?: string;
 }
 
-export const Switch: FC<SwitchProps> = ({ label, isChecked, onToggle }) => {
+export const Switch: FC<SwitchProps> = ({
+  label,
+  isChecked,
+  onToggle,
+  className,
+}) => {
   return (
-    <div className="flex items-center mt-3 w-52">
+    <div className={`flex items-center ${className} w-52`}>
       <input
         onChange={(event: ChangeEvent<HTMLInputElement>) =>
           onToggle(event.target.value)

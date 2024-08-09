@@ -1,8 +1,10 @@
 import { FC } from "react";
 
-interface AlertMessage {
+export type Color = "error" | "sucess" | "info " | "warning";
+
+export interface AlertMessage {
   message: string;
-  status: "error" | "sucess" | "info " | "warning";
+  status: Color;
 }
 
 export const Alert: FC<AlertMessage> = ({ message, status }) => {
