@@ -1,0 +1,7 @@
+1 encrypt password in the response
+2 rename: List des fives -> Liste des fives du groupe {groupName}
+3 rename: Il n'y a pas de fives d'organisé 🙁 -> Il n'y a pas de fives d'organisé pour le groupe {groupName} 🙁
+4 group name Startcase
+5 group 1 membres -> group 1 membre (retirer le s si group < 1)
+6 group info modal -> put group Pin (hided and user can see it)
+7 in group info modal, replace players id by players name

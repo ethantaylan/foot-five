@@ -12,7 +12,6 @@ import { Five } from "../Five/Five.tsx";
 import { usePlayerInfoStore } from "../../store/PlayerInfo.ts";
 import { useSupabase } from "../../hooks/useSupabase.ts";
 import { JoinGroupModal } from "../Modals/JoinGroupModal/JoinGroupModal.tsx";
-
 import { Groups } from "../Groups/Groups.tsx";
 
 export const FiveList: FC = () => {
