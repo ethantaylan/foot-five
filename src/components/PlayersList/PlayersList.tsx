@@ -11,21 +11,21 @@ import { FiveInformation } from "../FiveInformation/FiveInformation";
 import { useSupabase } from "../../hooks/useSupabase";
 import SubscribeModal from "../Modals/SubscribeModal/SubscribeModal";
 import { EditFiveModal } from "../Modals/EditFiveModal/EditFiveModal";
-import { DeleteFiveModal } from "../Modals/DeleteFiveModal/DeleteFiveModal";
 import { UnSubscribeModal } from "../Modals/UnSubscribeModal/UnSubscribeModal";
 import { usePlayerInfoStore } from "../../store/PlayerInfo";
 import { useAdminStore } from "../../store/Admin";
+import { DeleteFiveModal } from "../Modals/DeleteFiveModal/DeleteFiveModal";
 
 export default function PlayersList() {
   const { user } = useUser();
   const { id } = useParams();
   const { setIsUserAdmin } = useAdminStore();
   const { setIsUserAlreadySubscribed } = usePlayerInfoStore();
-
   const [five, setFive] = useState<Five>();
   const [titulars, setTitulars] = useState<Players[]>([]);
   const [substitutes, setSubstitutes] = useState<Players[]>([]);
   const [playerInfo, setPlayerInfo] = useState<Players | null>();
+
   const getFivePlayersFetch = useSupabase<FivePlayerResponse[]>(
     () =>
       supabase
@@ -113,7 +113,11 @@ export default function PlayersList() {
         />
         <SubscribeModal onConfirm={handleSubscribeModalConfirmation} />
         <EditFiveModal onConfirm={() => getFivesFetch.executeFetch()} />
-        <DeleteFiveModal />
+        <DeleteFiveModal
+          onDelete={() => {
+            getFivesFetch.executeFetch();
+          }}
+        />
 
         <div className="flex flex-col w-full">
           <FiveInformation playerInfo={playerInfo} five={five} />

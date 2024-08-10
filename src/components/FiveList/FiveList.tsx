@@ -13,12 +13,19 @@ import { usePlayerInfoStore } from "../../store/PlayerInfo.ts";
 import { useSupabase } from "../../hooks/useSupabase.ts";
 import { JoinGroupModal } from "../Modals/JoinGroupModal/JoinGroupModal.tsx";
 import { Groups } from "../Groups/Groups.tsx";
+import { GroupsResponse } from "../../models/Groups.ts";
+import { Groups as GroupsModel } from "../../models/Groups.ts";
+import { GroupInformationModal } from "../Modals/GoupInformationModal/GroupInformationModal.tsx";
+import { NewGroupModal } from "../Modals/NewGroupModal/NewGroupModal.tsx";
+import { useGroupsStore } from "../../store/GroupsStore.ts";
 
 export const FiveList: FC = () => {
   const { setPlayerInfo } = usePlayerInfoStore();
+  const { setSelectedGroup } = useGroupsStore();
   const { user } = useUser();
   const [fives, setFives] = useState<FiveModel[]>([]);
   const [fiveId, setFiveId] = useState<number>();
+  const [groups, setGroups] = useState<GroupsModel[]>([]);
 
   const getFivesFetch = useSupabase<FiveResponse[]>(
     () =>
@@ -27,7 +34,7 @@ export const FiveList: FC = () => {
         .select("*, five_players (is_substitute, player:player_id (*))")
         .order("created_at", { ascending: false })
         .limit(4),
-    true
+    false
   );
 
   const deleteFiveFetch = useSupabase<FiveResponse[]>(
@@ -40,19 +47,39 @@ export const FiveList: FC = () => {
     false
   );
 
+  const getGroupsFetch = useSupabase<GroupsResponse[]>(
+    () => supabase.from("groups").select("*"),
+    false
+  );
+
+  useEffect(() => {
+    getFivesFetch.executeFetch();
+    getGroupsFetch.executeFetch();
+  }, []);
+
+  useEffect(() => {
+    if (getGroupsFetch.response) {
+      setGroups(getGroupsFetch.response.map((g) => new GroupsModel(g)));
+    }
+  }, [getGroupsFetch.response]);
+
+  useEffect(() => {
+    groups && setSelectedGroup(groups[0]);
+  }, [groups]);
+
   useEffect(() => {
     user && playerInfoFetch.executeFetch();
   }, [user]);
 
   useEffect(() => {
-    getFivesFetch.response &&
-      setFives(getFivesFetch.response.map((f) => new FiveModel(f)));
-  }, [getFivesFetch.response]);
-
-  useEffect(() => {
     playerInfoFetch.response &&
       setPlayerInfo(new Players(playerInfoFetch.response));
   }, [playerInfoFetch.response]);
+
+  useEffect(() => {
+    getFivesFetch.response &&
+      setFives(getFivesFetch.response.map((f) => new FiveModel(f)));
+  }, [getFivesFetch.response]);
 
   useEffect(() => {
     fiveId &&
@@ -67,12 +94,22 @@ export const FiveList: FC = () => {
 
   return (
     <div className="flex flex-col">
-      <NewFiveModal onConfirm={() => getFivesFetch.executeFetch()} />
+      <NewFiveModal
+        onConfirm={() => {
+          getFivesFetch.executeFetch();
+          getGroupsFetch.executeFetch();
+        }}
+        groups={groups}
+      />
       <JoinGroupModal />
-      <Groups />
+      <GroupInformationModal
+        onConfirm={() => getGroupsFetch.executeFetch()}
+        onDeleteGroupe={() => getGroupsFetch.executeFetch()}
+      />
+      <NewGroupModal onConfirm={() => getGroupsFetch.executeFetch()} />
 
+      <Groups groups={groups} onGroupClick={setSelectedGroup} />
       <FiveHeader />
-
       <Five fives={fives} onRemoveFive={setFiveId} />
 
       <button
