@@ -1,30 +1,40 @@
-import { useEffect, useState } from "react";
+import { FC, useEffect, useState } from "react";
 import { supabase } from "../../supabase";
 import { showModal } from "../../utils/ShowModal";
-import { NewFiveModal } from "../NewFiveModal/NewFiveModal";
+import { NewFiveModal } from "../Modals/NewFiveModal/NewFiveModal.tsx";
 import { Players, PlayersResponse } from "../../models/Player.ts";
 import { useUser } from "@clerk/clerk-react";
 import { Spinner } from "../Spinner/Spinner.tsx";
 import { Modals } from "../../constants/Modals.ts";
-import { Five, FiveResponse } from "../../models/Five.ts";
-import { Fives } from "../Fives/Fives.tsx";
+import FiveHeader from "../FiveHeader/FiveListHeader.tsx";
+import { FiveResponse, Five as FiveModel } from "../../models/Five.ts";
+import { Five } from "../Five/Five.tsx";
+import { usePlayerInfoStore } from "../../store/PlayerInfo.ts";
 import { useSupabase } from "../../hooks/useSupabase.ts";
-import { useGlobalStore } from "../../context/index.tsx";
+import { JoinGroupModal } from "../Modals/JoinGroupModal/JoinGroupModal.tsx";
+import { Groups } from "../Groups/Groups.tsx";
+import { GroupsResponse } from "../../models/Groups.ts";
+import { Groups as GroupsModel } from "../../models/Groups.ts";
+import { GroupInformationModal } from "../Modals/GoupInformationModal/GroupInformationModal.tsx";
+import { NewGroupModal } from "../Modals/NewGroupModal/NewGroupModal.tsx";
+import { useGroupsStore } from "../../store/GroupsStore.ts";
 
-export const FiveList = () => {
-  const { setPlayerInfo } = useGlobalStore();
+export const FiveList: FC = () => {
+  const { setPlayerInfo } = usePlayerInfoStore();
+  const { setSelectedGroup } = useGroupsStore();
   const { user } = useUser();
-  const [fives, setFives] = useState<Five[]>([]);
+  const [fives, setFives] = useState<FiveModel[]>([]);
   const [fiveId, setFiveId] = useState<number>();
+  const [groups, setGroups] = useState<GroupsModel[]>([]);
 
   const getFivesFetch = useSupabase<FiveResponse[]>(
     () =>
       supabase
         .from("fives")
         .select("*, five_players (is_substitute, player:player_id (*))")
-        .order("id", { ascending: false })
+        .order("created_at", { ascending: false })
         .limit(4),
-    true
+    false
   );
 
   const deleteFiveFetch = useSupabase<FiveResponse[]>(
@@ -37,19 +47,39 @@ export const FiveList = () => {
     false
   );
 
+  const getGroupsFetch = useSupabase<GroupsResponse[]>(
+    () => supabase.from("groups").select("*"),
+    false
+  );
+
+  useEffect(() => {
+    getFivesFetch.executeFetch();
+    getGroupsFetch.executeFetch();
+  }, []);
+
+  useEffect(() => {
+    if (getGroupsFetch.response) {
+      setGroups(getGroupsFetch.response.map((g) => new GroupsModel(g)));
+    }
+  }, [getGroupsFetch.response]);
+
+  useEffect(() => {
+    groups && setSelectedGroup(groups[0]);
+  }, [groups]);
+
   useEffect(() => {
     user && playerInfoFetch.executeFetch();
   }, [user]);
 
   useEffect(() => {
-    getFivesFetch.response &&
-      setFives(getFivesFetch.response.map((f) => new Five(f)));
-  }, [getFivesFetch.response]);
-
-  useEffect(() => {
     playerInfoFetch.response &&
       setPlayerInfo(new Players(playerInfoFetch.response));
   }, [playerInfoFetch.response]);
+
+  useEffect(() => {
+    getFivesFetch.response &&
+      setFives(getFivesFetch.response.map((f) => new FiveModel(f)));
+  }, [getFivesFetch.response]);
 
   useEffect(() => {
     fiveId &&
@@ -64,18 +94,36 @@ export const FiveList = () => {
 
   return (
     <div className="flex flex-col">
-      <NewFiveModal onConfirm={() => getFivesFetch.executeFetch()} />
+      <NewFiveModal
+        onConfirm={() => {
+          getFivesFetch.executeFetch();
+          getGroupsFetch.executeFetch();
+        }}
+        groups={groups}
+      />
+      <JoinGroupModal />
+      <GroupInformationModal
+        onConfirm={() => getGroupsFetch.executeFetch()}
+        onDeleteGroupe={() => getGroupsFetch.executeFetch()}
+      />
+      <NewGroupModal onConfirm={() => getGroupsFetch.executeFetch()} />
 
-      <h1 className="flex text-xl font-bold">Bienvenue !</h1>
-      <h2 className="mt-3 mb-1">Liste des fives</h2>
-
-      <Fives fives={fives} onRemoveFive={setFiveId} />
+      <Groups groups={groups} onGroupClick={setSelectedGroup} />
+      <FiveHeader />
+      <Five fives={fives} onRemoveFive={setFiveId} />
 
       <button
         onClick={() => showModal(Modals.NEW_FIVE_MODAL)}
-        className="btn mt-3 w-full btn-sm rounded btn-primary"
+        className="btn mt-3 rounded btn-secondary"
       >
         Nouveau five
+      </button>
+
+      <button
+        onClick={() => showModal(Modals.JOIN_GROUP_MODAL)}
+        className="btn mt-3 w-full btn-outline rounded btn-primary"
+      >
+        Rejoindre un groupe
       </button>
     </div>
   );

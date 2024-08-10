@@ -1,18 +1,22 @@
 import { XCircleIcon } from "@heroicons/react/16/solid";
-import { Five } from "../../models/Five";
+import { Five as FiveModel } from "../../models/Five";
 import { FC } from "react";
 import { useNavigate } from "react-router-dom";
-import { useGlobalStore } from "../../context";
 import { FivePlayersAvatar } from "../FivePlayersAvatar/FivePlayersAvatar";
 import { formatDate } from "../../utils/FormatDate";
+import { useFiveStore } from "../../store/Five";
+import { usePlayerInfoStore } from "../../store/PlayerInfo";
+import { useAdminStore } from "../../store/Admin";
 
 export interface FivesProps {
-  fives: Five[];
+  fives: FiveModel[];
   onRemoveFive: (fiveId: number) => void;
 }
 
-export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
-  const { setFive, setPlayers, playerInfo, isUserAdmin } = useGlobalStore();
+export const Five: FC<FivesProps> = ({ fives, onRemoveFive }) => {
+  const { isUserAdmin } = useAdminStore();
+  const { setFive } = useFiveStore();
+  const { playerInfo } = usePlayerInfoStore();
   const navigate = useNavigate();
 
   return (
@@ -25,10 +29,11 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
 
           return (
             <div
+              onClick={() => navigate(`/fives/${f.id}`)}
               key={f.id}
               className={`w-full cursor-pointer border-l-4 ${
                 isPastFive ? "border-red-500" : "border-green-500"
-              } border-opacity-65 bg-white shadow-sm p-2 rounded`}
+              } border-opacity-65 shadow-sm p-2 bg-white rounded`}
             >
               <div className="flex relative items-center justify-between">
                 <h2 className="font-bold">{formatDate(f.date)}</h2>
@@ -48,14 +53,7 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
                 )}
               </div>
 
-              <div
-                onClick={() => {
-                  navigate(`/fives/${f.id}`);
-                  setFive(f);
-                  setPlayers(f.players);
-                }}
-                className="flex flex-col"
-              >
+              <div onClick={() => setFive(f)} className="flex flex-col">
                 <span className="text-secondary text-sm">
                   {f.place.replace("Autre", "Lieu non précisé")}
                 </span>
@@ -71,7 +69,7 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
                   <span className="text-secondary text-xs">
                     Organisé par:
                     <span className="font-bold ms-1">
-                      {f.organizer?.username || "N/A"}
+                      {f.organizer.username ?? "N/A"}
                     </span>
                   </span>
                 </div>
@@ -80,8 +78,8 @@ export const Fives: FC<FivesProps> = ({ fives, onRemoveFive }) => {
           );
         })
       ) : (
-        <h6 className="my-5 rounded alert alert-primary shadow-md">
-          {"Il n'y a pas de fives d'organisés :("}
+        <h6 className="mb-3 rounded alert alert-primary shadow-md">
+          {"Il n'y a pas de fives d'organisé 🙁"}
         </h6>
       )}
     </div>

@@ -15,7 +15,7 @@ export default function Header() {
     const hours = String(date.getHours()).padStart(2, "0");
     const minutes = String(date.getMinutes()).padStart(2, "0");
     const secondes = String(date.getSeconds()).padStart(2, "0");
-    return `${day}/${month}/${year} - ${hours}:${minutes}:${secondes}`;
+    return `${day}/${month}/${year} - <strong class="ms-1">${hours}:${minutes}:${secondes}</strong>`;
   };
 
   useEffect(() => {
@@ -43,10 +43,12 @@ export default function Header() {
       )}
       <div className="flex justify-between w-full">
         <button className="font-black text-xl">FIVE ⚽</button>
+
         <div className="flex items-center">
-          <span className="text-xs me-2 badge bg-opacity-65 rounded border shadow-md">
-            {date}
-          </span>
+          <div
+            dangerouslySetInnerHTML={{ __html: date }}
+            className="text-xs me-2 badge bg-opacity-65 rounded border shadow-md"
+          />
           <Profil />
         </div>
       </div>
