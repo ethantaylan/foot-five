@@ -107,7 +107,6 @@ export const FiveList: FC = () => {
         onDeleteGroupe={() => getGroupsFetch.executeFetch()}
       />
       <NewGroupModal onConfirm={() => getGroupsFetch.executeFetch()} />
-
       <Groups groups={groups} onGroupClick={setSelectedGroup} />
       <FiveHeader />
       <Five fives={fives} onRemoveFive={setFiveId} />

@@ -5,3 +5,12 @@
 5 group 1 membres -> group 1 membre (retirer le s si group < 1)
 6 group info modal -> put group Pin (hided and user can see it)
 7 in group info modal, replace players id by players name
+
+Groups
+New route: /groups
+
+with input search and list of groups
+when click on a group, open modal join group with password
+
+On /groups, add a button to create a group
+

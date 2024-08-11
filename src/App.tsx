@@ -13,7 +13,7 @@ import OnSignup from "./components/OnSignup/OnSignup";
 import PlayersList from "./components/PlayersList/PlayersList";
 import { useGlobalStore } from "./store/GlobalStore";
 import { useEffect, useState } from "react";
-import { Groups } from "./components/Groups/Groups";
+import Groups from "./pages/Groups";
 
 export default function App() {
   const { setIsDevEnv } = useGlobalStore();
@@ -72,6 +72,15 @@ export default function App() {
 
             <Route path="/onsignin" element={<OnSignup />} />
             <Route path="/onsignup" element={<OnSignup />} />
+            <Route
+              path="/groups"
+              element={
+                <div className="flex max-w-2xl min-h-[420px] h-fit shadow-2xl backdrop-blur-md rounded-xl p-7 bg-white/70 w-full flex-col">
+                  <Header />
+                  <Groups />
+                </div>
+              }
+            />
             <Route
               path="/fives/:id"
               element={

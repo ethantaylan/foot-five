@@ -4,46 +4,32 @@ import { Modal } from "../../Modal/Modal";
 import { useSupabase } from "../../../hooks/useSupabase";
 import { supabase } from "../../../supabase";
 import { usePlayerInfoStore } from "../../../store/PlayerInfo";
+import { Groups } from "../../../models/Groups";
+import { GroupsCards } from "../../GroupsCard/GroupsCard";
 
 export const JoinGroupModal = () => {
   const [groupName, setGroupName] = useState<string>("");
-  const [password, setPassword] = useState<string>("");  // New state for the password
+  const [group, setGroup] = useState<Groups | null>(null);
+  const [password, setPassword] = useState<string>("");
   const { playerInfo } = usePlayerInfoStore();
 
-  const joinGroupFetch = useSupabase(async () => {
-    // Fetch the group based on groupName
-    const { data: group, error } = await supabase
+  const getGroupFetch = useSupabase(() => {
+    supabase
       .from("groups")
       .select("id, password, players_id, players_name")
       .eq("name", groupName)
+      .eq("password", password)
       .single();
+  });
 
-    if (error) {
-      console.error("Group not found:", error.message);
-      return;
-    }
-
-    // Check if the provided password matches the stored password
-    if (group.password !== password) {
-      console.error("Incorrect password");
-      return;
-    }
-
-    // Update the group with the new user
-    const updatedPlayersId = [...group.players_id, playerInfo?.userId];
-    const updatedPlayersName = [...group.players_name, playerInfo?.fullName || playerInfo?.userName];
-
-    const { error: updateError } = await supabase
+  const joinGroupFetch = useSupabase(() => {
+    supabase
       .from("groups")
       .update({
-        players_id: updatedPlayersId,
-        players_name: updatedPlayersName,
+        players_id: "",
+        players_name: "",
       })
-      .eq("id", group.id);
-
-    if (updateError) {
-      console.error("Failed to update group:", updateError.message);
-    }
+      .eq("id", group?.id);
   }, false);
 
   return (
@@ -67,13 +53,24 @@ export const JoinGroupModal = () => {
         <div>
           <label className="label-text">Mot de passe (PIN à 4 chiffres)</label>
           <input
-            type="password"  // Mask the password input
-            value={password}  // Bind the password state to the input
+            type="password"
+            value={password}
             maxLength={4}
             onChange={(event: ChangeEvent<HTMLInputElement>) =>
               setPassword(event.target.value)
             }
             className="input input-bordered input-sm w-full"
+          />
+        </div>
+
+        <div className="flex">
+          <GroupsCards
+            groupName={""}
+            membersLenght={0}
+            onClick={function (): void {
+              throw new Error("Function not implemented.");
+            }}
+            fives={0}
           />
         </div>
       </div>
