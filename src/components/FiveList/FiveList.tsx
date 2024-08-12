@@ -18,6 +18,7 @@ import { Groups as GroupsModel } from "../../models/Groups.ts";
 import { GroupInformationModal } from "../Modals/GoupInformationModal/GroupInformationModal.tsx";
 import { NewGroupModal } from "../Modals/NewGroupModal/NewGroupModal.tsx";
 import { useGroupsStore } from "../../store/GroupsStore.ts";
+import { useNavigate } from "react-router-dom";
 
 export const FiveList: FC = () => {
   const { setPlayerInfo } = usePlayerInfoStore();
@@ -26,6 +27,7 @@ export const FiveList: FC = () => {
   const [fives, setFives] = useState<FiveModel[]>([]);
   const [fiveId, setFiveId] = useState<number>();
   const [groups, setGroups] = useState<GroupsModel[]>([]);
+  const navigate = useNavigate();
 
   const getFivesFetch = useSupabase<FiveResponse[]>(
     () =>
@@ -119,7 +121,7 @@ export const FiveList: FC = () => {
       </button>
 
       <button
-        onClick={() => showModal(Modals.JOIN_GROUP_MODAL)}
+        onClick={() => navigate("/groups")}
         className="btn mt-3 w-full btn-outline rounded btn-primary"
       >
         Rejoindre un groupe
